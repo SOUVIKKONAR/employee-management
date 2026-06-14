@@ -44,7 +44,7 @@ class Employee(models.Model):
     phone_no = models.CharField(
         max_length=10,
         validators=[phone_validator],
-         unique=True
+        
     )
     email = models.EmailField(unique=True)
     
