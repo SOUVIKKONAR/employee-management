@@ -208,3 +208,16 @@ class Project(models.Model):
     def __str__(self):
         return self.project_name
 
+class EmployeeProject(models.Model):
+
+    employee = models.ForeignKey(
+        Employee,
+        on_delete=models.CASCADE
+    )
+
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE
+    )
+
+    assigned_date = models.DateField(auto_now_add=True)
