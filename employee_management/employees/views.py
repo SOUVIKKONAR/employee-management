@@ -1,4 +1,7 @@
 from django.shortcuts import render
+from rest_framework import filters
+from rest_framework.permissions import AllowAny
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from .models import (
     Employee,
@@ -24,8 +27,33 @@ from .serializers import (
 )
 
 class EmployeeViewSet(viewsets.ModelViewSet):
+    
+    permission_classes = [AllowAny]
+
+    queryset = Employee.objects.all()
+
+    serializer_class = EmployeeSerializer
+
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
+
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter
+    ]
+
+    filterset_fields = [
+        'department',
+        'designation',
+        'status'
+    ]
+
+    search_fields = [
+        'emp_code',
+        'first_name',
+        'last_name',
+        'email'
+    ]
     
 class DepartmentViewSet(viewsets.ModelViewSet):
     queryset = Department.objects.all()
