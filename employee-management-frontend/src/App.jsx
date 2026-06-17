@@ -1,0 +1,72 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import EmployeeList from "./pages/Employees/EmployeeList";
+import AddEmployee from "./pages/Employees/AddEmployee";
+import EditEmployee from "./pages/Employees/EditEmployee";
+
+import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login";
+
+import PrivateRoute from "./components/PrivateRoute";
+
+function App() {
+
+    return (
+
+        <BrowserRouter>
+
+            <Routes>
+
+                {/* Public Route */}
+
+                <Route
+                    path="/login"
+                    element={<Login />}
+                />
+
+                {/* Protected Routes */}
+
+                <Route
+                    path="/"
+                    element={
+                        <PrivateRoute>
+                            <EmployeeList />
+                        </PrivateRoute>
+                    }
+                />
+
+                <Route
+                    path="/dashboard"
+                    element={
+                        <PrivateRoute>
+                            <Dashboard />
+                        </PrivateRoute>
+                    }
+                />
+
+                <Route
+                    path="/add"
+                    element={
+                        <PrivateRoute>
+                            <AddEmployee />
+                        </PrivateRoute>
+                    }
+                />
+
+                <Route
+                    path="/edit/:id"
+                    element={
+                        <PrivateRoute>
+                            <EditEmployee />
+                        </PrivateRoute>
+                    }
+                />
+
+            </Routes>
+
+        </BrowserRouter>
+
+    );
+}
+
+export default App;
