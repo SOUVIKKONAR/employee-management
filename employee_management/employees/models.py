@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 
 class Department(models.Model):
@@ -85,6 +86,9 @@ class Employee(models.Model):
         blank=True
     )
 
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
@@ -135,6 +139,10 @@ class Attendance(models.Model):
         max_length=20,
         choices=STATUS_CHOICES
     )
+
+    def clean(self):
+        if self.check_in and self.check_out and self.check_out < self.check_in:
+            raise ValidationError('Check-out time cannot be earlier than check-in time.')
     
 class Leave(models.Model):
 
@@ -161,6 +169,12 @@ class Leave(models.Model):
         max_length=20,
         choices=APPROVAL_CHOICES
     )
+
+    @property
+    def total_days(self):
+        if self.start_date and self.end_date:
+            return (self.end_date - self.start_date).days + 1
+        return 0
 
 class Payroll(models.Model):
 
@@ -190,10 +204,15 @@ class Payroll(models.Model):
 
     net_salary = models.DecimalField(
         max_digits=10,
-        decimal_places=2
+        decimal_places=2,
+        blank=True
     )
 
     payment_date = models.DateField()
+
+    def save(self, *args, **kwargs):
+        self.net_salary = self.basic_salary + self.bonus - self.deduction
+        super().save(*args, **kwargs)
     
 class Project(models.Model):
 

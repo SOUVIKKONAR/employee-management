@@ -1,5 +1,80 @@
-body {
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+* {
     margin: 0;
-    background-color: #f8f9fa;
-    font-family: Arial, sans-serif;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f0f2f5;
+    color: #1a1a2e;
+}
+
+/* Smooth scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track { background: #f0f2f5; }
+::-webkit-scrollbar-thumb { background: #c7c7d1; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+/* Form controls global rounding */
+.form-control:focus,
+.form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+}
+
+/* Navbar active link */
+.navbar .nav-link.active {
+    background: rgba(255, 255, 255, 0.15) !important;
+}
+
+.navbar .nav-link:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Table hover */
+.table-hover tbody tr:hover {
+    background-color: rgba(102, 126, 234, 0.05);
+    transition: background-color 0.15s;
+}
+
+/* Card hover for projects */
+.project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Button transitions */
+.btn {
+    transition: opacity 0.2s, transform 0.15s;
+}
+.btn:hover:not(:disabled) {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+.btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+/* Dark inputs inside Login */
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+}
+
+/* Badge styling */
+.badge {
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+/* Table header text */
+thead th {
+    font-size: 0.82rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
