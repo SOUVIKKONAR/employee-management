@@ -3,6 +3,7 @@ import api from "../../services/api";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { toast } from "react-toastify";
+import { FilePenLine, Save } from "lucide-react";
 
 function EditEmployee() {
     const { id } = useParams();
@@ -42,7 +43,7 @@ function EditEmployee() {
         setFieldErrors({});
         try {
             await api.put(`employees/${id}/`, { ...employee, manager: employee.manager || null });
-            toast.success("Employee updated successfully! ✅");
+            toast.success("Employee updated successfully!");
             navigate("/");
         } catch (error) {
             const data = error.response?.data;
@@ -81,7 +82,9 @@ function EditEmployee() {
                     <div className="col-xl-10">
                         <div className="card border-0 shadow-sm" style={{ borderRadius: "16px", overflow: "hidden" }}>
                             <div className="card-header border-0 py-4 px-4" style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" }}>
-                                <h3 className="mb-0 fw-bold text-white">✏️ Edit Employee</h3>
+                                <h3 className="mb-0 fw-bold text-white d-flex align-items-center gap-2">
+                                    <FilePenLine size={24} /> Edit Employee
+                                </h3>
                                 <p className="mb-0 text-white" style={{ opacity: 0.85 }}>
                                     {employee.first_name} {employee.last_name} — {employee.emp_code}
                                 </p>
@@ -167,9 +170,9 @@ function EditEmployee() {
                                     </div>
 
                                     <div className="d-flex gap-3 mt-3">
-                                        <button type="submit" disabled={submitting} className="btn fw-semibold px-4 py-2"
+                                        <button type="submit" disabled={submitting} className="btn fw-semibold px-4 py-2 d-flex align-items-center gap-2"
                                             style={{ background: "linear-gradient(135deg, #667eea, #764ba2)", color: "white", border: "none", borderRadius: "10px" }}>
-                                            {submitting ? <><span className="spinner-border spinner-border-sm me-2" />Updating...</> : "✅ Update Employee"}
+                                            {submitting ? <><span className="spinner-border spinner-border-sm" />Updating...</> : <><Save size={16} />Update Employee</>}
                                         </button>
                                         <button type="button" className="btn btn-outline-secondary px-4 py-2" style={{ borderRadius: "10px" }}
                                             onClick={() => navigate("/")}>Cancel</button>
