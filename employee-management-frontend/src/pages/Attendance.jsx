@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import api from "../services/api";
 import Navbar from "../components/Navbar";
 import { toast } from "react-toastify";
+import { CalendarCheck, Plus, X, Save, Trash2, CalendarDays } from "lucide-react";
 
 const STATUS_BADGE = { Present: "success", Absent: "danger", "Half-Day": "warning" };
 
@@ -43,7 +44,7 @@ function Attendance() {
         setSubmitting(true);
         try {
             await api.post("attendance/", form);
-            toast.success("Attendance logged successfully! 📅");
+            toast.success("Attendance logged successfully!");
             setShowForm(false);
             setForm({ employee: "", att_date: today, check_in: "", check_out: "", status: "Present" });
             loadData();
@@ -71,16 +72,18 @@ function Attendance() {
             <div className="container-fluid py-4 px-4" style={{ background: "#f0f2f5", minHeight: "100vh" }}>
                 <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                     <div>
-                        <h1 className="fw-bold mb-0" style={{ color: "#1a1a2e" }}>📅 Attendance</h1>
+                        <h1 className="fw-bold mb-0 d-flex align-items-center gap-2" style={{ color: "#1a1a2e" }}>
+                            <CalendarCheck size={28} /> Attendance
+                        </h1>
                         <p className="text-muted mb-0">Track daily check-in / check-out</p>
                     </div>
                     <div className="d-flex gap-2 align-items-center flex-wrap">
                         <input type="date" className="form-control" value={filterDate} onChange={(e) => setFilterDate(e.target.value)}
                             style={{ borderRadius: "10px", width: "180px" }} />
                         {filterDate && <button className="btn btn-outline-secondary btn-sm" style={{ borderRadius: "8px" }} onClick={() => setFilterDate("")}>Clear</button>}
-                        <button className="btn fw-semibold" onClick={() => setShowForm(!showForm)}
+                        <button className="btn fw-semibold d-flex align-items-center gap-2" onClick={() => setShowForm(!showForm)}
                             style={{ background: "linear-gradient(135deg, #f093fb, #f5576c)", color: "white", border: "none", borderRadius: "10px", padding: "10px 20px" }}>
-                            {showForm ? "✕ Cancel" : "➕ Log Attendance"}
+                            {showForm ? <><X size={16} />Cancel</> : <><Plus size={16} />Log Attendance</>}
                         </button>
                     </div>
                 </div>
@@ -127,9 +130,9 @@ function Attendance() {
                                         </select>
                                     </div>
                                     <div className="col-12">
-                                        <button type="submit" disabled={submitting} className="btn fw-semibold px-4"
+                                        <button type="submit" disabled={submitting} className="btn fw-semibold px-4 d-flex align-items-center gap-2"
                                             style={{ background: "linear-gradient(135deg, #f093fb, #f5576c)", color: "white", border: "none", borderRadius: "10px" }}>
-                                            {submitting ? <><span className="spinner-border spinner-border-sm me-2" />Saving...</> : "💾 Save Record"}
+                                            {submitting ? <><span className="spinner-border spinner-border-sm" />Saving...</> : <><Save size={16} />Save Record</>}
                                         </button>
                                     </div>
                                 </div>
@@ -168,16 +171,16 @@ function Attendance() {
                                                     <span className={`badge bg-${STATUS_BADGE[r.status] ?? "secondary"}`}>{r.status}</span>
                                                 </td>
                                                 <td className="px-3">
-                                                    <button className="btn btn-sm" onClick={() => handleDelete(r.id)}
+                                                    <button className="btn btn-sm d-flex align-items-center gap-1" onClick={() => handleDelete(r.id)}
                                                         style={{ background: "#f5576c", color: "white", borderRadius: "8px" }}>
-                                                        🗑️
+                                                        <Trash2 size={14} />
                                                     </button>
                                                 </td>
                                             </tr>
                                         )) : (
                                             <tr>
                                                 <td colSpan="7" className="text-center py-5 text-muted">
-                                                    <div style={{ fontSize: "3rem" }}>📅</div>
+                                                    <div className="mb-2"><CalendarDays size={40} strokeWidth={1.2} /></div>
                                                     <p>No attendance records found</p>
                                                 </td>
                                             </tr>
