@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import api from "../services/api";
 import Navbar from "../components/Navbar";
 import { toast } from "react-toastify";
+import { Rocket, Plus, X, UserPlus, Trash2, Users, ChevronDown, ChevronUp, UserMinus } from "lucide-react";
 
 function Projects() {
     const [projects, setProjects] = useState([]);
@@ -44,7 +45,7 @@ function Projects() {
         setSubmitting(true);
         try {
             await api.post("projects/", projectForm);
-            toast.success("Project created! 🚀");
+            toast.success("Project created!");
             setShowProjectForm(false);
             setProjectForm({ project_name: "", description: "", start_date: "", end_date: "" });
             loadData();
@@ -60,7 +61,7 @@ function Projects() {
         setSubmitting(true);
         try {
             await api.post("employee-projects/", assignForm);
-            toast.success("Employee assigned to project! ✅");
+            toast.success("Employee assigned to project!");
             setShowAssignForm(false);
             setAssignForm({ employee: "", project: "" });
             loadData();
@@ -106,17 +107,19 @@ function Projects() {
             <div className="container-fluid py-4 px-4" style={{ background: "#f0f2f5", minHeight: "100vh" }}>
                 <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                     <div>
-                        <h1 className="fw-bold mb-0" style={{ color: "#1a1a2e" }}>🚀 Projects</h1>
+                        <h1 className="fw-bold mb-0 d-flex align-items-center gap-2" style={{ color: "#1a1a2e" }}>
+                            <Rocket size={28} /> Projects
+                        </h1>
                         <p className="text-muted mb-0">Manage projects and team assignments</p>
                     </div>
                     <div className="d-flex gap-2 flex-wrap">
-                        <button className="btn fw-semibold" onClick={() => { setShowAssignForm(!showAssignForm); setShowProjectForm(false); }}
+                        <button className="btn fw-semibold d-flex align-items-center gap-2" onClick={() => { setShowAssignForm(!showAssignForm); setShowProjectForm(false); }}
                             style={{ background: "linear-gradient(135deg, #f093fb, #f5576c)", color: "white", border: "none", borderRadius: "10px", padding: "10px 20px" }}>
-                            {showAssignForm ? "✕ Cancel" : "👤 Assign Employee"}
+                            {showAssignForm ? <><X size={16} />Cancel</> : <><UserPlus size={16} />Assign Employee</>}
                         </button>
-                        <button className="btn fw-semibold" onClick={() => { setShowProjectForm(!showProjectForm); setShowAssignForm(false); }}
+                        <button className="btn fw-semibold d-flex align-items-center gap-2" onClick={() => { setShowProjectForm(!showProjectForm); setShowAssignForm(false); }}
                             style={{ background: "linear-gradient(135deg, #667eea, #764ba2)", color: "white", border: "none", borderRadius: "10px", padding: "10px 20px" }}>
-                            {showProjectForm ? "✕ Cancel" : "➕ New Project"}
+                            {showProjectForm ? <><X size={16} />Cancel</> : <><Plus size={16} />New Project</>}
                         </button>
                     </div>
                 </div>
@@ -151,9 +154,9 @@ function Projects() {
                                             onChange={(e) => setProjectForm({ ...projectForm, description: e.target.value })} />
                                     </div>
                                     <div className="col-12">
-                                        <button type="submit" disabled={submitting} className="btn fw-semibold px-4"
+                                        <button type="submit" disabled={submitting} className="btn fw-semibold px-4 d-flex align-items-center gap-2"
                                             style={{ background: "linear-gradient(135deg, #667eea, #764ba2)", color: "white", border: "none", borderRadius: "10px" }}>
-                                            {submitting ? <><span className="spinner-border spinner-border-sm me-2" />Creating...</> : "🚀 Create Project"}
+                                            {submitting ? <><span className="spinner-border spinner-border-sm" />Creating...</> : <><Rocket size={16} />Create Project</>}
                                         </button>
                                     </div>
                                 </div>
@@ -192,9 +195,9 @@ function Projects() {
                                         </select>
                                     </div>
                                     <div className="col-md-2 d-flex align-items-end">
-                                        <button type="submit" disabled={submitting} className="btn fw-semibold w-100"
+                                        <button type="submit" disabled={submitting} className="btn fw-semibold w-100 d-flex align-items-center justify-content-center gap-2"
                                             style={{ background: "linear-gradient(135deg, #f093fb, #f5576c)", color: "white", border: "none", borderRadius: "10px" }}>
-                                            {submitting ? <span className="spinner-border spinner-border-sm" /> : "Assign"}
+                                            {submitting ? <span className="spinner-border spinner-border-sm" /> : <><UserPlus size={16} />Assign</>}
                                         </button>
                                     </div>
                                 </div>
@@ -211,7 +214,7 @@ function Projects() {
                     </div>
                 ) : projects.length === 0 ? (
                     <div className="text-center py-5 text-muted">
-                        <div style={{ fontSize: "3rem" }}>🚀</div>
+                        <div className="mb-2"><Rocket size={40} strokeWidth={1.2} /></div>
                         <p>No projects yet. Create your first one!</p>
                     </div>
                 ) : (
@@ -243,12 +246,12 @@ function Projects() {
                                         <div className="card-body p-4">
                                             <p className="text-muted small mb-3">{proj.description}</p>
                                             <div className="d-flex justify-content-between align-items-center mb-3">
-                                                <span className="fw-semibold text-muted small">
-                                                    👥 {projAssignments.length} member{projAssignments.length !== 1 ? "s" : ""}
+                                                <span className="fw-semibold text-muted small d-flex align-items-center gap-1">
+                                                    <Users size={14} /> {projAssignments.length} member{projAssignments.length !== 1 ? "s" : ""}
                                                 </span>
-                                                <button className="btn btn-sm text-muted" style={{ borderRadius: "8px", fontSize: "0.8rem" }}
+                                                <button className="btn btn-sm text-muted d-flex align-items-center gap-1" style={{ borderRadius: "8px", fontSize: "0.8rem" }}
                                                     onClick={() => setActiveProject(isExpanded ? null : proj.id)}>
-                                                    {isExpanded ? "▲ Hide" : "▼ Show Team"}
+                                                    {isExpanded ? <><ChevronUp size={14} />Hide</> : <><ChevronDown size={14} />Show Team</>}
                                                 </button>
                                             </div>
 
@@ -259,9 +262,13 @@ function Projects() {
                                                             {projAssignments.map((a) => (
                                                                 <li key={a.id} className="d-flex justify-content-between align-items-center py-1 px-2 rounded-2 mb-1"
                                                                     style={{ background: "#f8f9fa" }}>
-                                                                    <span className="small">👤 {a.employee_name}</span>
-                                                                    <button className="btn btn-sm p-0 px-1 text-danger" title="Remove"
-                                                                        onClick={() => handleRemoveAssignment(a.id)}>✕</button>
+                                                                    <span className="small d-flex align-items-center gap-1">
+                                                                        <Users size={12} /> {a.employee_name}
+                                                                    </span>
+                                                                    <button className="btn btn-sm p-0 px-1 text-danger d-flex align-items-center" title="Remove"
+                                                                        onClick={() => handleRemoveAssignment(a.id)}>
+                                                                        <UserMinus size={14} />
+                                                                    </button>
                                                                 </li>
                                                             ))}
                                                         </ul>
@@ -271,10 +278,10 @@ function Projects() {
                                                 </div>
                                             )}
 
-                                            <button className="btn btn-sm w-100"
+                                            <button className="btn btn-sm w-100 d-flex align-items-center justify-content-center gap-2"
                                                 onClick={() => handleDeleteProject(proj.id)}
                                                 style={{ background: "#fee2e2", color: "#991b1b", border: "none", borderRadius: "8px" }}>
-                                                🗑️ Delete Project
+                                                <Trash2 size={14} /> Delete Project
                                             </button>
                                         </div>
                                     </div>
