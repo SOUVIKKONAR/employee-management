@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { toast } from "react-toastify";
+import { Building2, Eye, EyeOff, LogIn } from "lucide-react";
 
 function Login() {
     const navigate = useNavigate();
@@ -20,7 +21,7 @@ function Login() {
             const response = await api.post("token/", credentials);
             localStorage.setItem("access_token", response.data.access);
             localStorage.setItem("refresh_token", response.data.refresh);
-            toast.success("Welcome back! 👋");
+            toast.success("Welcome back!");
             navigate("/dashboard");
         } catch {
             toast.error("Invalid username or password");
@@ -35,8 +36,10 @@ function Login() {
 
                 {/* Logo */}
                 <div className="text-center mb-4">
-                    <div style={{ fontSize: "3.5rem" }}>🏢</div>
-                    <h2 className="fw-bold text-white mt-2">EMS Portal</h2>
+                    <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: "72px", height: "72px", borderRadius: "20px", background: "linear-gradient(135deg, #667eea, #764ba2)", boxShadow: "0 8px 24px rgba(102,126,234,0.4)" }}>
+                        <Building2 size={36} color="white" />
+                    </div>
+                    <h2 className="fw-bold text-white mt-3">EMS Portal</h2>
                     <p style={{ color: "rgba(255,255,255,0.6)" }}>Employee Management System</p>
                 </div>
 
@@ -75,10 +78,10 @@ function Login() {
                                         placeholder="Enter password"
                                         style={{ borderRadius: "12px 0 0 12px", padding: "12px 16px", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)", color: "white" }}
                                     />
-                                    <button type="button" className="input-group-text border-start-0"
+                                    <button type="button" className="input-group-text border-start-0 d-flex align-items-center justify-content-center"
                                         onClick={() => setShowPassword(!showPassword)}
-                                        style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "0 12px 12px 0", color: "white", cursor: "pointer" }}>
-                                        {showPassword ? "🙈" : "👁️"}
+                                        style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "0 12px 12px 0", color: "white", cursor: "pointer", width: "46px" }}>
+                                        {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
                                     </button>
                                 </div>
                             </div>
@@ -86,13 +89,13 @@ function Login() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="btn w-100 fw-bold py-3"
+                                className="btn w-100 fw-bold py-3 d-flex align-items-center justify-content-center gap-2"
                                 style={{ background: "linear-gradient(135deg, #667eea, #764ba2)", color: "white", border: "none", borderRadius: "12px", fontSize: "1rem" }}
                             >
                                 {loading ? (
                                     <><span className="spinner-border spinner-border-sm me-2" />Signing in...</>
                                 ) : (
-                                    "Sign In →"
+                                    <><LogIn size={18} />Sign In</>
                                 )}
                             </button>
                         </form>
