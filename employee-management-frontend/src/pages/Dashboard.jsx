@@ -1,12 +1,20 @@
 import Navbar from "../components/Navbar";
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import { Users, Building2, Tag, Rocket, UserPlus, CalendarCheck, Umbrella, Wallet } from "lucide-react";
 
 const statCards = [
-    { key: "employees", label: "Total Employees", icon: "👥", gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" },
-    { key: "departments", label: "Departments", icon: "🏢", gradient: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)" },
-    { key: "designations", label: "Designations", icon: "🏷️", gradient: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)" },
-    { key: "projects", label: "Projects", icon: "🚀", gradient: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)" },
+    { key: "employees", label: "Total Employees", Icon: Users, gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" },
+    { key: "departments", label: "Departments", Icon: Building2, gradient: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)" },
+    { key: "designations", label: "Designations", Icon: Tag, gradient: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)" },
+    { key: "projects", label: "Projects", Icon: Rocket, gradient: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)" },
+];
+
+const quickLinks = [
+    { href: "/add", label: "Add Employee", Icon: UserPlus, color: "#667eea" },
+    { href: "/attendance", label: "Log Attendance", Icon: CalendarCheck, color: "#f5576c" },
+    { href: "/leave", label: "Manage Leave", Icon: Umbrella, color: "#43e97b" },
+    { href: "/payroll", label: "View Payroll", Icon: Wallet, color: "#4facfe" },
 ];
 
 function Dashboard() {
@@ -38,11 +46,13 @@ function Dashboard() {
                 </div>
 
                 <div className="row g-4 mb-5">
-                    {statCards.map(({ key, label, icon, gradient }) => (
+                    {statCards.map(({ key, label, Icon, gradient }) => (
                         <div className="col-md-6 col-xl-3" key={key}>
                             <div className="card border-0 shadow-sm h-100" style={{ borderRadius: "16px", overflow: "hidden" }}>
                                 <div className="card-body d-flex align-items-center gap-3 p-4" style={{ background: gradient }}>
-                                    <div style={{ fontSize: "2.5rem" }}>{icon}</div>
+                                    <div style={{ background: "rgba(255,255,255,0.2)", borderRadius: "12px", padding: "12px", display: "flex" }}>
+                                        <Icon size={28} color="white" />
+                                    </div>
                                     <div className="text-white">
                                         <div className="fs-2 fw-bold">
                                             {loading ? (
@@ -61,15 +71,11 @@ function Dashboard() {
                     <div className="card-body p-4">
                         <h5 className="fw-bold mb-3" style={{ color: "#1a1a2e" }}>Quick Links</h5>
                         <div className="row g-3">
-                            {[
-                                { href: "/add", label: "➕ Add Employee", color: "#667eea" },
-                                { href: "/attendance", label: "📅 Log Attendance", color: "#f5576c" },
-                                { href: "/leave", label: "🏖️ Manage Leave", color: "#43e97b" },
-                                { href: "/payroll", label: "💰 View Payroll", color: "#4facfe" },
-                            ].map(({ href, label, color }) => (
+                            {quickLinks.map(({ href, label, Icon, color }) => (
                                 <div className="col-sm-6 col-md-3" key={href}>
-                                    <a href={href} className="text-decoration-none d-block text-center py-3 rounded-3 fw-semibold"
+                                    <a href={href} className="text-decoration-none d-flex align-items-center justify-content-center gap-2 py-3 rounded-3 fw-semibold"
                                         style={{ background: `${color}18`, color, border: `1.5px solid ${color}40`, transition: "all 0.2s" }}>
+                                        <Icon size={17} />
                                         {label}
                                     </a>
                                 </div>
