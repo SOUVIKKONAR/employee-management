@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import api from "../services/api";
 import Navbar from "../components/Navbar";
 import { toast } from "react-toastify";
+import { Wallet, Plus, X, Save, Trash2, IndianRupee } from "lucide-react";
 
 const MONTHS = [
     "January", "February", "March", "April", "May", "June",
@@ -57,7 +58,7 @@ function Payroll() {
         setSubmitting(true);
         try {
             await api.post("payrolls/", form);
-            toast.success("Payroll entry created! 💰");
+            toast.success("Payroll entry created!");
             setShowForm(false);
             setForm({
                 employee: "",
@@ -95,7 +96,9 @@ function Payroll() {
             <div className="container-fluid py-4 px-4" style={{ background: "#f0f2f5", minHeight: "100vh" }}>
                 <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                     <div>
-                        <h1 className="fw-bold mb-0" style={{ color: "#1a1a2e" }}>💰 Payroll</h1>
+                        <h1 className="fw-bold mb-0 d-flex align-items-center gap-2" style={{ color: "#1a1a2e" }}>
+                            <Wallet size={28} /> Payroll
+                        </h1>
                         <p className="text-muted mb-0">Manage monthly salary disbursements</p>
                     </div>
                     <div className="d-flex gap-2 flex-wrap align-items-center">
@@ -106,9 +109,9 @@ function Payroll() {
                                 <option key={e.id} value={e.id}>{e.first_name} {e.last_name}</option>
                             ))}
                         </select>
-                        <button className="btn fw-semibold" onClick={() => setShowForm(!showForm)}
+                        <button className="btn fw-semibold d-flex align-items-center gap-2" onClick={() => setShowForm(!showForm)}
                             style={{ background: "linear-gradient(135deg, #4facfe, #00f2fe)", color: "white", border: "none", borderRadius: "10px", padding: "10px 20px" }}>
-                            {showForm ? "✕ Cancel" : "➕ Add Payroll"}
+                            {showForm ? <><X size={16} />Cancel</> : <><Plus size={16} />Add Payroll</>}
                         </button>
                     </div>
                 </div>
@@ -165,9 +168,9 @@ function Payroll() {
                                         </div>
                                     </div>
                                     <div className="col-12">
-                                        <button type="submit" disabled={submitting} className="btn fw-semibold px-4"
+                                        <button type="submit" disabled={submitting} className="btn fw-semibold px-4 d-flex align-items-center gap-2"
                                             style={{ background: "linear-gradient(135deg, #4facfe, #00f2fe)", color: "white", border: "none", borderRadius: "10px" }}>
-                                            {submitting ? <><span className="spinner-border spinner-border-sm me-2" />Saving...</> : "💾 Save Payroll"}
+                                            {submitting ? <><span className="spinner-border spinner-border-sm" />Saving...</> : <><Save size={16} />Save Payroll</>}
                                         </button>
                                     </div>
                                 </div>
@@ -206,16 +209,16 @@ function Payroll() {
                                                 <td className="px-3 fw-bold" style={{ color: "#065f46" }}>{fmt(p.net_salary)}</td>
                                                 <td className="px-3">{p.payment_date}</td>
                                                 <td className="px-3">
-                                                    <button className="btn btn-sm" onClick={() => handleDelete(p.id)}
+                                                    <button className="btn btn-sm d-flex align-items-center gap-1" onClick={() => handleDelete(p.id)}
                                                         style={{ background: "#f5576c", color: "white", borderRadius: "8px" }}>
-                                                        🗑️
+                                                        <Trash2 size={14} />
                                                     </button>
                                                 </td>
                                             </tr>
                                         )) : (
                                             <tr>
                                                 <td colSpan="9" className="text-center py-5 text-muted">
-                                                    <div style={{ fontSize: "3rem" }}>💰</div>
+                                                    <div className="mb-2"><IndianRupee size={40} strokeWidth={1.2} /></div>
                                                     <p>No payroll records found</p>
                                                 </td>
                                             </tr>
