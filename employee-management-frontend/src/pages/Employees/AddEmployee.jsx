@@ -3,6 +3,7 @@ import api from "../../services/api";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { toast } from "react-toastify";
+import { UserPlus, Save } from "lucide-react";
 
 const FIELD_ERRORS_INIT = {};
 
@@ -43,7 +44,7 @@ function AddEmployee() {
         setFieldErrors({});
         try {
             await api.post("employees/", { ...employee, manager: employee.manager || null });
-            toast.success("Employee added successfully! 🎉");
+            toast.success("Employee added successfully!");
             navigate("/");
         } catch (error) {
             const data = error.response?.data;
@@ -82,7 +83,9 @@ function AddEmployee() {
                     <div className="col-xl-10">
                         <div className="card border-0 shadow-sm" style={{ borderRadius: "16px", overflow: "hidden" }}>
                             <div className="card-header border-0 py-4 px-4" style={{ background: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)" }}>
-                                <h3 className="mb-0 fw-bold text-white">➕ Add New Employee</h3>
+                                <h3 className="mb-0 fw-bold text-white d-flex align-items-center gap-2">
+                                    <UserPlus size={24} /> Add New Employee
+                                </h3>
                                 <p className="mb-0 text-white" style={{ opacity: 0.85 }}>Fill in all required fields</p>
                             </div>
 
@@ -142,9 +145,9 @@ function AddEmployee() {
                                     </div>
 
                                     <div className="d-flex gap-3 mt-3">
-                                        <button type="submit" disabled={submitting} className="btn fw-semibold px-4 py-2"
+                                        <button type="submit" disabled={submitting} className="btn fw-semibold px-4 py-2 d-flex align-items-center gap-2"
                                             style={{ background: "linear-gradient(135deg, #43e97b, #38f9d7)", color: "white", border: "none", borderRadius: "10px" }}>
-                                            {submitting ? <><span className="spinner-border spinner-border-sm me-2" />Saving...</> : "💾 Save Employee"}
+                                            {submitting ? <><span className="spinner-border spinner-border-sm" />Saving...</> : <><Save size={16} />Save Employee</>}
                                         </button>
                                         <button type="button" className="btn btn-outline-secondary px-4 py-2" style={{ borderRadius: "10px" }}
                                             onClick={() => navigate("/")}>Cancel</button>
