@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import api from "../services/api";
 import Navbar from "../components/Navbar";
 import { toast } from "react-toastify";
+import { Umbrella, Plus, X, Send, Trash2, Check, Ban, Palmtree } from "lucide-react";
 
 const APPROVAL_BADGE = { Pending: "warning", Approved: "success", Rejected: "danger" };
 const LEAVE_TYPES = ["Casual Leave", "Sick Leave", "Earned Leave", "Maternity Leave", "Paternity Leave", "Unpaid Leave"];
@@ -42,7 +43,7 @@ function Leave() {
         setSubmitting(true);
         try {
             await api.post("leaves/", form);
-            toast.success("Leave application submitted! 🏖️");
+            toast.success("Leave application submitted!");
             setShowForm(false);
             setForm({ employee: "", leave_type: "Casual Leave", start_date: "", end_date: "", reason: "", approval_status: "Pending" });
             loadData();
@@ -56,7 +57,7 @@ function Leave() {
     const updateStatus = async (id, status) => {
         try {
             await api.patch(`leaves/${id}/`, { approval_status: status });
-            toast.success(`Leave ${status.toLowerCase()} ✅`);
+            toast.success(`Leave ${status.toLowerCase()}`);
             loadData();
         } catch {
             toast.error("Failed to update status");
@@ -80,7 +81,9 @@ function Leave() {
             <div className="container-fluid py-4 px-4" style={{ background: "#f0f2f5", minHeight: "100vh" }}>
                 <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                     <div>
-                        <h1 className="fw-bold mb-0" style={{ color: "#1a1a2e" }}>🏖️ Leave Management</h1>
+                        <h1 className="fw-bold mb-0 d-flex align-items-center gap-2" style={{ color: "#1a1a2e" }}>
+                            <Umbrella size={28} /> Leave Management
+                        </h1>
                         <p className="text-muted mb-0">Apply, approve, or reject leave requests</p>
                     </div>
                     <div className="d-flex gap-2 flex-wrap align-items-center">
@@ -90,9 +93,9 @@ function Leave() {
                             <option value="Approved">Approved</option>
                             <option value="Rejected">Rejected</option>
                         </select>
-                        <button className="btn fw-semibold" onClick={() => setShowForm(!showForm)}
+                        <button className="btn fw-semibold d-flex align-items-center gap-2" onClick={() => setShowForm(!showForm)}
                             style={{ background: "linear-gradient(135deg, #43e97b, #38f9d7)", color: "white", border: "none", borderRadius: "10px", padding: "10px 20px" }}>
-                            {showForm ? "✕ Cancel" : "➕ Apply Leave"}
+                            {showForm ? <><X size={16} />Cancel</> : <><Plus size={16} />Apply Leave</>}
                         </button>
                     </div>
                 </div>
@@ -136,9 +139,9 @@ function Leave() {
                                             onChange={(e) => setForm({ ...form, reason: e.target.value })} placeholder="Reason for leave..." />
                                     </div>
                                     <div className="col-12">
-                                        <button type="submit" disabled={submitting} className="btn fw-semibold px-4"
+                                        <button type="submit" disabled={submitting} className="btn fw-semibold px-4 d-flex align-items-center gap-2"
                                             style={{ background: "linear-gradient(135deg, #43e97b, #38f9d7)", color: "white", border: "none", borderRadius: "10px" }}>
-                                            {submitting ? <><span className="spinner-border spinner-border-sm me-2" />Submitting...</> : "📤 Submit Application"}
+                                            {submitting ? <><span className="spinner-border spinner-border-sm" />Submitting...</> : <><Send size={16} />Submit Application</>}
                                         </button>
                                     </div>
                                 </div>
@@ -179,20 +182,26 @@ function Leave() {
                                                     <div className="d-flex gap-1">
                                                         {l.approval_status === "Pending" && (
                                                             <>
-                                                                <button className="btn btn-sm" onClick={() => updateStatus(l.id, "Approved")}
-                                                                    style={{ background: "#43e97b", color: "white", borderRadius: "8px" }}>✓</button>
-                                                                <button className="btn btn-sm" onClick={() => updateStatus(l.id, "Rejected")}
-                                                                    style={{ background: "#f5576c", color: "white", borderRadius: "8px" }}>✗</button>
+                                                                <button className="btn btn-sm d-flex align-items-center" onClick={() => updateStatus(l.id, "Approved")}
+                                                                    style={{ background: "#43e97b", color: "white", borderRadius: "8px" }} title="Approve">
+                                                                    <Check size={14} />
+                                                                </button>
+                                                                <button className="btn btn-sm d-flex align-items-center" onClick={() => updateStatus(l.id, "Rejected")}
+                                                                    style={{ background: "#f5576c", color: "white", borderRadius: "8px" }} title="Reject">
+                                                                    <Ban size={14} />
+                                                                </button>
                                                             </>
                                                         )}
-                                                        <button className="btn btn-sm" onClick={() => handleDelete(l.id)}
-                                                            style={{ background: "#aaa", color: "white", borderRadius: "8px" }}>🗑️</button>
+                                                        <button className="btn btn-sm d-flex align-items-center" onClick={() => handleDelete(l.id)}
+                                                            style={{ background: "#aaa", color: "white", borderRadius: "8px" }} title="Delete">
+                                                            <Trash2 size={14} />
+                                                        </button>
                                                     </div>
                                                 </td>
                                             </tr>
                                         )) : (
                                             <tr><td colSpan="9" className="text-center py-5 text-muted">
-                                                <div style={{ fontSize: "3rem" }}>🏖️</div><p>No leave records found</p>
+                                                <div className="mb-2"><Palmtree size={40} strokeWidth={1.2} /></div><p>No leave records found</p>
                                             </td></tr>
                                         )}
                                     </tbody>
