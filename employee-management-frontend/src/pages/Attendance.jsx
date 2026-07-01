@@ -3,6 +3,7 @@ import api from "../services/api";
 import Navbar from "../components/Navbar";
 import { toast } from "react-toastify";
 import { CalendarCheck, Plus, X, Save, Trash2, CalendarDays } from "lucide-react";
+import ConfirmModal from "../components/ConfirmModal";
 
 const STATUS_BADGE = { Present: "success", Absent: "danger", "Half-Day": "warning" };
 
@@ -13,6 +14,7 @@ function Attendance() {
     const [showForm, setShowForm] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [filterDate, setFilterDate] = useState("");
+    const [confirmModal, setConfirmModal] = useState({ isOpen: false, id: null });
 
     const today = new Date().toISOString().split("T")[0];
 
@@ -55,8 +57,8 @@ function Attendance() {
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!window.confirm("Delete this attendance record?")) return;
+    const handleDelete = async () => {
+        const { id } = confirmModal;
         try {
             await api.delete(`attendance/${id}/`);
             toast.success("Record deleted");
@@ -171,7 +173,7 @@ function Attendance() {
                                                     <span className={`badge bg-${STATUS_BADGE[r.status] ?? "secondary"}`}>{r.status}</span>
                                                 </td>
                                                 <td className="px-3">
-                                                    <button className="btn btn-sm d-flex align-items-center gap-1" onClick={() => handleDelete(r.id)}
+                                                    <button className="btn btn-sm d-flex align-items-center gap-1" onClick={() => setConfirmModal({ isOpen: true, id: r.id })}
                                                         style={{ background: "#f5576c", color: "white", borderRadius: "8px" }}>
                                                         <Trash2 size={14} />
                                                     </button>
@@ -192,6 +194,14 @@ function Attendance() {
                     </div>
                 </div>
             </div>
+
+            <ConfirmModal 
+                isOpen={confirmModal.isOpen} 
+                onClose={() => setConfirmModal({ isOpen: false, id: null })} 
+                onConfirm={handleDelete} 
+                title="Delete Attendance Record" 
+                message="Are you sure you want to delete this attendance record? This action cannot be undone." 
+            />
         </>
     );
 }

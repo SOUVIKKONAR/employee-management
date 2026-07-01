@@ -3,6 +3,7 @@ import api from "../services/api";
 import Navbar from "../components/Navbar";
 import { toast } from "react-toastify";
 import { Wallet, Plus, X, Save, Trash2, IndianRupee } from "lucide-react";
+import ConfirmModal from "../components/ConfirmModal";
 
 const MONTHS = [
     "January", "February", "March", "April", "May", "June",
@@ -16,6 +17,7 @@ function Payroll() {
     const [showForm, setShowForm] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [filterEmp, setFilterEmp] = useState("");
+    const [confirmModal, setConfirmModal] = useState({ isOpen: false, id: null });
 
     const currentYear = new Date().getFullYear();
     const currentMonth = MONTHS[new Date().getMonth()];
@@ -76,8 +78,8 @@ function Payroll() {
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!window.confirm("Delete this payroll record?")) return;
+    const handleDelete = async () => {
+        const { id } = confirmModal;
         try {
             await api.delete(`payrolls/${id}/`);
             toast.success("Payroll record deleted");
@@ -209,8 +211,10 @@ function Payroll() {
                                                 <td className="px-3 fw-bold" style={{ color: "#065f46" }}>{fmt(p.net_salary)}</td>
                                                 <td className="px-3">{p.payment_date}</td>
                                                 <td className="px-3">
-                                                    <button className="btn btn-sm d-flex align-items-center gap-1" onClick={() => handleDelete(p.id)}
-                                                        style={{ background: "#f5576c", color: "white", borderRadius: "8px" }}>
+                                                    <button className="btn btn-sm btn-outline-danger border-0 d-flex align-items-center justify-content-center"
+                                                        onClick={() => setConfirmModal({ isOpen: true, id: p.id })}
+                                                        style={{ width: "32px", height: "32px", borderRadius: "8px" }}
+                                                        title="Delete">
                                                         <Trash2 size={14} />
                                                     </button>
                                                 </td>
@@ -230,6 +234,14 @@ function Payroll() {
                     </div>
                 </div>
             </div>
+
+            <ConfirmModal 
+                isOpen={confirmModal.isOpen} 
+                onClose={() => setConfirmModal({ isOpen: false, id: null })} 
+                onConfirm={handleDelete} 
+                title="Delete Payroll Record" 
+                message="Are you sure you want to delete this payroll record? This action cannot be undone." 
+            />
         </>
     );
 }

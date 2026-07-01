@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { useEffect, useState, useCallback } from "react";
 import api from "../../services/api";
 import { toast } from "react-toastify";
-import { Users, UserPlus, Search, Pencil, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Users, UserPlus, Search, Pencil, Trash2, ChevronLeft, ChevronRight, Eye } from "lucide-react";
+import ConfirmModal from "../../components/ConfirmModal";
 
 const STATUS_BADGE = {
     Active: "success",
@@ -19,6 +20,7 @@ function EmployeeList() {
     const [totalCount, setTotalCount] = useState(0);
     const [loading, setLoading] = useState(false);
     const [deletingId, setDeletingId] = useState(null);
+    const [confirmModal, setConfirmModal] = useState({ isOpen: false, id: null, name: "" });
 
     const loadEmployees = useCallback((page = 1, search = searchTerm) => {
         setLoading(true);
@@ -41,8 +43,12 @@ function EmployeeList() {
         loadEmployees(1, "");
     }, []);
 
-    const handleDelete = async (id, name) => {
-        if (!window.confirm(`Delete "${name}"? This cannot be undone.`)) return;
+    const confirmDelete = (id, name) => {
+        setConfirmModal({ isOpen: true, id, name });
+    };
+
+    const handleDelete = async () => {
+        const { id, name } = confirmModal;
         setDeletingId(id);
         try {
             await api.delete(`employees/${id}/`);
@@ -147,6 +153,10 @@ function EmployeeList() {
                                                 <td className="px-3 text-muted" style={{ whiteSpace: "nowrap" }}>{emp.joining_date}</td>
                                                 <td className="px-3">
                                                     <div className="d-flex gap-2">
+                                                        <Link to={`/employees/${emp.id}`} className="btn btn-sm fw-semibold d-flex align-items-center gap-1"
+                                                            style={{ background: "#4facfe", color: "white", borderRadius: "8px" }}>
+                                                            <Eye size={13} /> View
+                                                        </Link>
                                                         <Link to={`/edit/${emp.id}`} className="btn btn-sm fw-semibold d-flex align-items-center gap-1"
                                                             style={{ background: "#667eea", color: "white", borderRadius: "8px" }}>
                                                             <Pencil size={13} /> Edit
@@ -154,7 +164,7 @@ function EmployeeList() {
                                                         <button
                                                             className="btn btn-sm fw-semibold d-flex align-items-center gap-1"
                                                             style={{ background: "#f5576c", color: "white", borderRadius: "8px" }}
-                                                            onClick={() => handleDelete(emp.id, `${emp.first_name} ${emp.last_name}`)}
+                                                            onClick={() => confirmDelete(emp.id, `${emp.first_name} ${emp.last_name}`)}
                                                             disabled={deletingId === emp.id}
                                                         >
                                                             {deletingId === emp.id ? "..." : <><Trash2 size={13} />Delete</>}
@@ -192,6 +202,14 @@ function EmployeeList() {
                     )}
                 </div>
             </div>
+
+            <ConfirmModal 
+                isOpen={confirmModal.isOpen} 
+                onClose={() => setConfirmModal({ isOpen: false, id: null, name: "" })} 
+                onConfirm={handleDelete} 
+                title="Delete Employee" 
+                message={`Are you sure you want to delete "${confirmModal.name}"? This action cannot be undone.`} 
+            />
         </>
     );
 }

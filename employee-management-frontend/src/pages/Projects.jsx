@@ -3,6 +3,7 @@ import api from "../services/api";
 import Navbar from "../components/Navbar";
 import { toast } from "react-toastify";
 import { Rocket, Plus, X, UserPlus, Trash2, Users, ChevronDown, ChevronUp, UserMinus } from "lucide-react";
+import ConfirmModal from "../components/ConfirmModal";
 
 function Projects() {
     const [projects, setProjects] = useState([]);
@@ -13,6 +14,7 @@ function Projects() {
     const [showAssignForm, setShowAssignForm] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [activeProject, setActiveProject] = useState(null);
+    const [confirmModal, setConfirmModal] = useState({ isOpen: false, id: null });
 
     const [projectForm, setProjectForm] = useState({
         project_name: "", description: "", start_date: "", end_date: "",
@@ -72,8 +74,8 @@ function Projects() {
         }
     };
 
-    const handleDeleteProject = async (id) => {
-        if (!window.confirm("Delete this project? All assignments will also be removed.")) return;
+    const handleDeleteProject = async () => {
+        const { id } = confirmModal;
         try {
             await api.delete(`projects/${id}/`);
             toast.success("Project deleted");
@@ -277,9 +279,8 @@ function Projects() {
                                                     )}
                                                 </div>
                                             )}
-
                                             <button className="btn btn-sm w-100 d-flex align-items-center justify-content-center gap-2"
-                                                onClick={() => handleDeleteProject(proj.id)}
+                                                onClick={() => setConfirmModal({ isOpen: true, id: proj.id })}
                                                 style={{ background: "#fee2e2", color: "#991b1b", border: "none", borderRadius: "8px" }}>
                                                 <Trash2 size={14} /> Delete Project
                                             </button>
@@ -291,6 +292,14 @@ function Projects() {
                     </div>
                 )}
             </div>
+
+            <ConfirmModal 
+                isOpen={confirmModal.isOpen} 
+                onClose={() => setConfirmModal({ isOpen: false, id: null })} 
+                onConfirm={handleDeleteProject} 
+                title="Delete Project" 
+                message="Are you sure you want to delete this project? All assignments will also be removed." 
+            />
         </>
     );
 }

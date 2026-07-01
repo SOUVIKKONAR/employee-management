@@ -3,6 +3,7 @@ import api from "../services/api";
 import Navbar from "../components/Navbar";
 import { toast } from "react-toastify";
 import { Umbrella, Plus, X, Send, Trash2, Check, Ban, Palmtree } from "lucide-react";
+import ConfirmModal from "../components/ConfirmModal";
 
 const APPROVAL_BADGE = { Pending: "warning", Approved: "success", Rejected: "danger" };
 const LEAVE_TYPES = ["Casual Leave", "Sick Leave", "Earned Leave", "Maternity Leave", "Paternity Leave", "Unpaid Leave"];
@@ -14,6 +15,7 @@ function Leave() {
     const [showForm, setShowForm] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [filterStatus, setFilterStatus] = useState("");
+    const [confirmModal, setConfirmModal] = useState({ isOpen: false, id: null });
 
     const [form, setForm] = useState({
         employee: "", leave_type: "Casual Leave", start_date: "", end_date: "", reason: "", approval_status: "Pending",
@@ -64,8 +66,8 @@ function Leave() {
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!window.confirm("Delete this leave record?")) return;
+    const handleDelete = async () => {
+        const { id } = confirmModal;
         try {
             await api.delete(`leaves/${id}/`);
             toast.success("Leave record deleted");
@@ -192,9 +194,8 @@ function Leave() {
                                                                 </button>
                                                             </>
                                                         )}
-                                                        <button className="btn btn-sm d-flex align-items-center" onClick={() => handleDelete(l.id)}
-                                                            style={{ background: "#aaa", color: "white", borderRadius: "8px" }} title="Delete">
-                                                            <Trash2 size={14} />
+                                                        <button className="btn btn-sm btn-outline-danger border-0" title="Delete" onClick={() => setConfirmModal({ isOpen: true, id: l.id })}>
+                                                            <Trash2 size={15} />
                                                         </button>
                                                     </div>
                                                 </td>
@@ -211,6 +212,14 @@ function Leave() {
                     </div>
                 </div>
             </div>
+
+            <ConfirmModal 
+                isOpen={confirmModal.isOpen} 
+                onClose={() => setConfirmModal({ isOpen: false, id: null })} 
+                onConfirm={handleDelete} 
+                title="Delete Leave Record" 
+                message="Are you sure you want to delete this leave record? This action cannot be undone." 
+            />
         </>
     );
 }
