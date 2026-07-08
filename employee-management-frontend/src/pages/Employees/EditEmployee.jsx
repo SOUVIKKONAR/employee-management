@@ -3,19 +3,26 @@ import api from "../../services/api";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { toast } from "react-toastify";
-import { FilePenLine, Save } from "lucide-react";
+import { FilePenLine, Save, MapPin } from "lucide-react";
 
 function EditEmployee() {
     const { id } = useParams();
     const navigate = useNavigate();
 
     const [employee, setEmployee] = useState({});
+    const [address, setAddress] = useState(null);
+    const [addressId, setAddressId] = useState(null);
     const [departments, setDepartments] = useState([]);
     const [designations, setDesignations] = useState([]);
     const [employees, setEmployees] = useState([]);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [fieldErrors, setFieldErrors] = useState({});
+    const [addrErrors, setAddrErrors] = useState({});
+
+    const [addrForm, setAddrForm] = useState({
+        address_line1: "", address_line2: "", city: "", state: "", country: "India", pincode: "",
+    });
 
     useEffect(() => {
         Promise.all([
@@ -23,11 +30,26 @@ function EditEmployee() {
             api.get("departments/"),
             api.get("designations/"),
             api.get("employees/?page_size=1000"),
-        ]).then(([emp, dept, des, allEmp]) => {
+            api.get(`addresses/?employee=${id}`),
+        ]).then(([emp, dept, des, allEmp, addr]) => {
             setEmployee(emp.data);
             setDepartments(dept.data.results ?? dept.data);
             setDesignations(des.data.results ?? des.data);
             setEmployees((allEmp.data.results ?? allEmp.data).filter((e) => e.id !== Number(id)));
+            const addrData = addr.data.results ?? addr.data;
+            const existing = Array.isArray(addrData) ? addrData[0] : addrData;
+            if (existing) {
+                setAddress(existing);
+                setAddressId(existing.id);
+                setAddrForm({
+                    address_line1: existing.address_line1 ?? "",
+                    address_line2: existing.address_line2 ?? "",
+                    city: existing.city ?? "",
+                    state: existing.state ?? "",
+                    country: existing.country ?? "India",
+                    pincode: existing.pincode ?? "",
+                });
+            }
         }).catch(() => toast.error("Failed to load employee data"))
           .finally(() => setLoading(false));
     }, [id]);
@@ -37,12 +59,36 @@ function EditEmployee() {
         setFieldErrors({ ...fieldErrors, [e.target.name]: null });
     };
 
+    const handleAddrChange = (e) => {
+        setAddrForm({ ...addrForm, [e.target.name]: e.target.value });
+        setAddrErrors({ ...addrErrors, [e.target.name]: null });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSubmitting(true);
         setFieldErrors({});
+        setAddrErrors({});
         try {
             await api.put(`employees/${id}/`, { ...employee, manager: employee.manager || null });
+
+            // Handle address save/update
+            if (addrForm.address_line1 && addrForm.city) {
+                try {
+                    if (addressId) {
+                        await api.put(`addresses/${addressId}/`, { ...addrForm, employee: Number(id) });
+                    } else {
+                        await api.post("addresses/", { ...addrForm, employee: Number(id) });
+                    }
+                } catch (addrErr) {
+                    const data = addrErr.response?.data;
+                    if (data && typeof data === "object") setAddrErrors(data);
+                    toast.warning("Employee updated but address could not be saved.");
+                    navigate("/");
+                    return;
+                }
+            }
+
             toast.success("Employee updated successfully!");
             navigate("/");
         } catch (error) {
@@ -70,9 +116,8 @@ function EditEmployee() {
         </>
     );
 
-    const ErrMsg = ({ name }) => fieldErrors[name] ? (
-        <div className="text-danger small mt-1">{Array.isArray(fieldErrors[name]) ? fieldErrors[name][0] : fieldErrors[name]}</div>
-    ) : null;
+    const ErrMsg = ({ name, errors = fieldErrors }) =>
+        errors[name] ? <div className="invalid-feedback d-block">{Array.isArray(errors[name]) ? errors[name][0] : errors[name]}</div> : null;
 
     return (
         <>
@@ -92,6 +137,9 @@ function EditEmployee() {
 
                             <div className="card-body p-4">
                                 <form onSubmit={handleSubmit}>
+
+                                    {/* ── Personal Details ── */}
+                                    <h6 className="fw-bold text-muted text-uppercase mb-3" style={{ fontSize: "0.78rem", letterSpacing: "0.5px" }}>Personal Details</h6>
                                     <div className="row">
                                         {[
                                             { label: "Employee Code", name: "emp_code" },
@@ -102,8 +150,10 @@ function EditEmployee() {
                                         ].map(({ label, name, type = "text" }) => (
                                             <div className="col-md-6 mb-3" key={name}>
                                                 <label className="form-label fw-semibold text-muted small">{label} *</label>
-                                                <input type={type} name={name} className={`form-control ${fieldErrors[name] ? "is-invalid" : ""}`}
-                                                    value={employee[name] ?? ""} onChange={handleChange} required style={{ borderRadius: "10px" }} />
+                                                <input type={type} name={name}
+                                                    className={`form-control ${fieldErrors[name] ? "is-invalid" : ""}`}
+                                                    value={employee[name] ?? ""} onChange={handleChange} required
+                                                    style={{ borderRadius: "10px" }} />
                                                 <ErrMsg name={name} />
                                             </div>
                                         ))}
@@ -129,7 +179,10 @@ function EditEmployee() {
 
                                         <div className="col-md-6 mb-3">
                                             <label className="form-label fw-semibold text-muted small">Salary (₹) *</label>
-                                            <input type="number" name="salary" className="form-control" value={employee.salary ?? ""} onChange={handleChange} required style={{ borderRadius: "10px" }} />
+                                            <input type="number" name="salary"
+                                                className={`form-control ${fieldErrors.salary ? "is-invalid" : ""}`}
+                                                value={employee.salary ?? ""} onChange={handleChange} required style={{ borderRadius: "10px" }} />
+                                            <ErrMsg name="salary" />
                                         </div>
 
                                         <div className="col-md-6 mb-3">
@@ -142,7 +195,8 @@ function EditEmployee() {
 
                                         <div className="col-md-6 mb-3">
                                             <label className="form-label fw-semibold text-muted small">Department *</label>
-                                            <select name="department" className={`form-select ${fieldErrors.department ? "is-invalid" : ""}`}
+                                            <select name="department"
+                                                className={`form-select ${fieldErrors.department ? "is-invalid" : ""}`}
                                                 value={employee.department ?? ""} onChange={handleChange} required style={{ borderRadius: "10px" }}>
                                                 <option value="">Select Department</option>
                                                 {departments.map((d) => <option key={d.id} value={d.id}>{d.dept_name}</option>)}
@@ -152,7 +206,8 @@ function EditEmployee() {
 
                                         <div className="col-md-6 mb-3">
                                             <label className="form-label fw-semibold text-muted small">Designation *</label>
-                                            <select name="designation" className={`form-select ${fieldErrors.designation ? "is-invalid" : ""}`}
+                                            <select name="designation"
+                                                className={`form-select ${fieldErrors.designation ? "is-invalid" : ""}`}
                                                 value={employee.designation ?? ""} onChange={handleChange} required style={{ borderRadius: "10px" }}>
                                                 <option value="">Select Designation</option>
                                                 {designations.map((d) => <option key={d.id} value={d.id}>{d.designation_name}</option>)}
@@ -167,6 +222,32 @@ function EditEmployee() {
                                                 {employees.map((e) => <option key={e.id} value={e.id}>{e.first_name} {e.last_name}</option>)}
                                             </select>
                                         </div>
+                                    </div>
+
+                                    {/* ── Address ── */}
+                                    <hr className="my-4" />
+                                    <h6 className="fw-bold text-muted text-uppercase mb-1 d-flex align-items-center gap-1" style={{ fontSize: "0.78rem", letterSpacing: "0.5px" }}>
+                                        <MapPin size={14} /> Address <span className="fw-normal text-lowercase">&nbsp;(optional)</span>
+                                    </h6>
+                                    <p className="text-muted small mb-3">Provide at least Address Line 1 and City to save the address.</p>
+                                    <div className="row">
+                                        {[
+                                            { label: "Address Line 1", name: "address_line1" },
+                                            { label: "Address Line 2", name: "address_line2" },
+                                            { label: "City", name: "city" },
+                                            { label: "State", name: "state" },
+                                            { label: "Country", name: "country" },
+                                            { label: "Pincode", name: "pincode" },
+                                        ].map(({ label, name }) => (
+                                            <div className="col-md-6 mb-3" key={name}>
+                                                <label className="form-label fw-semibold text-muted small">{label}</label>
+                                                <input type="text" name={name}
+                                                    className={`form-control ${addrErrors[name] ? "is-invalid" : ""}`}
+                                                    value={addrForm[name]} onChange={handleAddrChange}
+                                                    style={{ borderRadius: "10px" }} />
+                                                {addrErrors[name] && <div className="invalid-feedback">{addrErrors[name]}</div>}
+                                            </div>
+                                        ))}
                                     </div>
 
                                     <div className="d-flex gap-3 mt-3">
