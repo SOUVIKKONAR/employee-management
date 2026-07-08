@@ -25,5 +25,10 @@ router.register('projects', ProjectViewSet)
 router.register('employee-projects', EmployeeProjectViewSet)
 router.register('attendance', AttendanceViewSet)
 router.register('leaves', LeaveViewSet)
+router.register('user-profiles', UserProfileViewSet)
+router.register('leave-balances', LeaveBalanceViewSet)
+router.register('notifications', NotificationViewSet)
+router.register('documents', DocumentViewSet)
+router.register('holidays', HolidayViewSet)
 
 urlpatterns = router.urls

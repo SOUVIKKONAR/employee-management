@@ -1,5 +1,20 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
+from django.contrib.auth.models import User
+
+class UserProfile(models.Model):
+    ROLE_CHOICES = [
+        ('Admin', 'Admin'),
+        ('HR', 'HR'),
+        ('Manager', 'Manager'),
+        ('Employee', 'Employee')
+    ]
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='Employee')
+
+    def __str__(self):
+        return f"{self.user.username} - {self.role}"
 
 
 class Department(models.Model):
@@ -30,12 +45,19 @@ class Employee(models.Model):
         ('Inactive', 'Inactive')
     ]
 
-    emp_code = models.CharField(max_length=20, unique=True)
+    BLOOD_GROUP_CHOICES = [
+        ('A+', 'A+'), ('A-', 'A-'),
+        ('B+', 'B+'), ('B-', 'B-'),
+        ('AB+', 'AB+'), ('AB-', 'AB-'),
+        ('O+', 'O+'), ('O-', 'O-')
+    ]
 
+    emp_code = models.CharField(max_length=20, unique=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
 
-    from django.core.validators import RegexValidator
+    profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
+    blood_group = models.CharField(max_length=5, choices=BLOOD_GROUP_CHOICES, blank=True)
 
     phone_validator = RegexValidator(
         regex=r'^[6-9]\d{9}$',
@@ -48,7 +70,6 @@ class Employee(models.Model):
         unique=True
     )
     email = models.EmailField(unique=True)
-    
 
     gender = models.CharField(
         max_length=10,
@@ -56,7 +77,6 @@ class Employee(models.Model):
     )
 
     dob = models.DateField()
-
     joining_date = models.DateField()
 
     salary = models.DecimalField(
@@ -100,7 +120,6 @@ class Address(models.Model):
     )
 
     address_line1 = models.CharField(max_length=255)
-
     address_line2 = models.CharField(
         max_length=255,
         blank=True
@@ -108,9 +127,7 @@ class Address(models.Model):
 
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
-
     country = models.CharField(max_length=100)
-
     pincode = models.CharField(max_length=10)
 
     def __str__(self):
@@ -121,7 +138,8 @@ class Attendance(models.Model):
     STATUS_CHOICES = [
         ('Present', 'Present'),
         ('Absent', 'Absent'),
-        ('Half-Day', 'Half-Day')
+        ('Half-Day', 'Half-Day'),
+        ('Late', 'Late')
     ]
 
     employee = models.ForeignKey(
@@ -130,10 +148,10 @@ class Attendance(models.Model):
     )
 
     att_date = models.DateField()
-
     check_in = models.TimeField()
-
     check_out = models.TimeField()
+    
+    overtime_hours = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
 
     status = models.CharField(
         max_length=20,
@@ -158,11 +176,8 @@ class Leave(models.Model):
     )
 
     leave_type = models.CharField(max_length=50)
-
     start_date = models.DateField()
-
     end_date = models.DateField()
-
     reason = models.TextField()
 
     approval_status = models.CharField(
@@ -175,6 +190,23 @@ class Leave(models.Model):
         if self.start_date and self.end_date:
             return (self.end_date - self.start_date).days + 1
         return 0
+
+class LeaveBalance(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    leave_type = models.CharField(max_length=50)
+    year = models.IntegerField()
+    total_allocated = models.IntegerField()
+    used = models.IntegerField(default=0)
+
+    @property
+    def remaining(self):
+        return self.total_allocated - self.used
+
+    class Meta:
+        unique_together = ('employee', 'leave_type', 'year')
+
+    def __str__(self):
+        return f"{self.employee} - {self.leave_type} - {self.year}"
 
 class Payroll(models.Model):
 
@@ -215,14 +247,25 @@ class Payroll(models.Model):
         super().save(*args, **kwargs)
     
 class Project(models.Model):
+    STATUS_CHOICES = [
+        ('Active', 'Active'),
+        ('Completed', 'Completed'),
+        ('On Hold', 'On Hold')
+    ]
+    PRIORITY_CHOICES = [
+        ('Low', 'Low'),
+        ('Medium', 'Medium'),
+        ('High', 'High')
+    ]
 
     project_name = models.CharField(max_length=100)
-
     description = models.TextField()
-
     start_date = models.DateField()
-
     end_date = models.DateField()
+
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Active')
+    priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='Medium')
+    budget = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True)
 
     def __str__(self):
         return self.project_name
@@ -238,5 +281,34 @@ class EmployeeProject(models.Model):
         Project,
         on_delete=models.CASCADE
     )
+    
+    role = models.CharField(max_length=100, blank=True)
+    hours_allocated = models.IntegerField(default=0)
 
     assigned_date = models.DateField(auto_now_add=True)
+
+class Notification(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.employee} - {self.message[:20]}"
+
+class Document(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    file = models.FileField(upload_to='documents/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.employee} - {self.name}"
+
+class Holiday(models.Model):
+    name = models.CharField(max_length=100)
+    date = models.DateField()
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.date}"
