@@ -34,9 +34,28 @@ class UserProfileViewSet(viewsets.ModelViewSet):
 
 class EmployeeViewSet(viewsets.ModelViewSet):
 
-    queryset = Employee.objects.select_related(
-        'department', 'designation', 'manager'
-    ).all()
+    queryset = (
+        Employee.objects.select_related(
+            'department', 'designation', 'manager'
+        )
+        .only(
+            'id',
+            'emp_code',
+            'first_name',
+            'last_name',
+            'email',
+            'phone_no',
+            'status',
+            'joining_date',
+            'department_id',
+            'designation_id',
+            'manager_id',
+            'department__dept_name',
+            'designation__designation_name',
+            'manager__first_name',
+            'manager__last_name',
+        )
+    )
     serializer_class = EmployeeSerializer
     pagination_class = LargeResultsSetPagination
 
