@@ -126,8 +126,8 @@ function EmployeeList() {
                                 <p className="mt-3 text-muted">Loading employees...</p>
                             </div>
                         ) : (
-                            <div className="table-responsive">
-                                <table className="table table-hover align-middle mb-0">
+                            <div className="table-responsive" style={{ maxWidth: "100%", overflowX: "auto" }}>
+                                <table className="table table-hover align-middle mb-0" style={{ minWidth: "1280px" }}>
                                     <thead style={{ background: "linear-gradient(135deg, #1a1a2e, #16213e)", color: "white" }}>
                                         <tr>
                                             {["#", "Code", "Name", "Email", "Phone", "Department", "Designation", "Status", "Joined", "Actions"].map((h) => (
@@ -152,7 +152,7 @@ function EmployeeList() {
                                                 </td>
                                                 <td className="px-3 text-muted" style={{ whiteSpace: "nowrap" }}>{emp.joining_date}</td>
                                                 <td className="px-3">
-                                                    <div className="d-flex gap-2">
+                                                    <div className="d-flex gap-2 flex-nowrap">
                                                         <Link to={`/employees/${emp.id}`} className="btn btn-sm fw-semibold d-flex align-items-center gap-1"
                                                             style={{ background: "#4facfe", color: "white", borderRadius: "8px" }}>
                                                             <Eye size={13} /> View
