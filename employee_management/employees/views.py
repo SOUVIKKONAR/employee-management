@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from rest_framework import filters, viewsets, status
+from rest_framework.permissions import AllowAny
+from rest_framework.views import APIView
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
@@ -16,9 +18,22 @@ from .serializers import (
     AddressSerializer, AttendanceSerializer, LeaveSerializer,
     PayrollSerializer, ProjectSerializer, EmployeeProjectSerializer,
     UserProfileSerializer, LeaveBalanceSerializer, NotificationSerializer,
-    DocumentSerializer, HolidaySerializer
+    DocumentSerializer, HolidaySerializer, SignupSerializer
 )
 
+
+
+class SignupView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = SignupSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response(
+            {'id': user.id, 'username': user.username},
+            status=status.HTTP_201_CREATED
+        )
 
 class LargeResultsSetPagination(PageNumberPagination):
     """Used for dropdown loaders — allows ?page_size=1000."""

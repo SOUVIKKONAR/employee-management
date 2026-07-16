@@ -1,3 +1,4 @@
+from django.urls import path
 from rest_framework.routers import DefaultRouter
 from .views import *
 
@@ -31,4 +32,4 @@ router.register('notifications', NotificationViewSet)
 router.register('documents', DocumentViewSet)
 router.register('holidays', HolidayViewSet)
 
-urlpatterns = router.urls
+urlpatterns = [path('signup/', SignupView.as_view(), name='signup')] + router.urls
