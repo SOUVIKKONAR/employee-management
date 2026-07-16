@@ -1,7 +1,9 @@
 import axios from "axios";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api/";
+
 const api = axios.create({
-    baseURL: "http://127.0.0.1:8000/api/",
+    baseURL: API_BASE_URL,
 });
 
 // Attach access token to every request
@@ -28,16 +30,15 @@ api.interceptors.response.use(
 
             if (refreshToken) {
                 try {
-                    const res = await axios.post(
-                        "http://127.0.0.1:8000/api/token/refresh/",
-                        { refresh: refreshToken }
-                    );
+                    const res = await axios.post(`${API_BASE_URL}token/refresh/`, {
+                        refresh: refreshToken,
+                    });
                     const newAccess = res.data.access;
                     localStorage.setItem("access_token", newAccess);
                     originalRequest.headers.Authorization = `Bearer ${newAccess}`;
                     return api(originalRequest);
                 } catch (refreshError) {
-                    // Refresh token expired — force logout
+                    // Refresh token expired - force logout
                     localStorage.removeItem("access_token");
                     localStorage.removeItem("refresh_token");
                     window.location.href = "/login";
