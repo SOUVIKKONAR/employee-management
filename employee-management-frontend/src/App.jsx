@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import EmployeeList from "./pages/Employees/EmployeeList";
 import AddEmployee from "./pages/Employees/AddEmployee";
 import EditEmployee from "./pages/Employees/EditEmployee";
+import EmployeeDetail from "./pages/Employees/EmployeeDetail";
 import Attendance from "./pages/Attendance";
 import Leave from "./pages/Leave";
 import Payroll from "./pages/Payroll";
@@ -49,6 +50,13 @@ function App() {
                     <PrivateRoute>
                         <Layout>
                             <EditEmployee />
+                        </Layout>
+                    </PrivateRoute>
+                } />
+                <Route path="/employees/:id" element={
+                    <PrivateRoute>
+                        <Layout>
+                            <EmployeeDetail />
                         </Layout>
                     </PrivateRoute>
                 } />
