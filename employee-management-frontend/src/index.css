@@ -12,9 +12,11 @@
     --warning: #f59e0b;
     --danger: #ef4444;
     --border: rgba(255, 255, 255, 0.1);
-    
+
     --sidebar-width: 260px;
-    --sidebar-collapsed-width: 80px;
+    --sidebar-collapsed-width: 72px;
+    --mobile-header-height: 60px;
+    --bottom-nav-height: 64px;
 }
 
 * {
@@ -30,145 +32,335 @@ body {
     overflow-x: hidden;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-::-webkit-scrollbar-track {
-    background: var(--bg-main);
-}
-::-webkit-scrollbar-thumb {
-    background: #475569;
-    border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: #64748b;
-}
+/* ── Scrollbar ───────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-main); }
+::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #64748b; }
 
-/* Typography Overrides */
-h1, h2, h3, h4, h5, h6 {
-    color: var(--text-primary);
-    font-weight: 700;
-}
-.text-muted {
-    color: var(--text-secondary) !important;
-}
+/* ── Typography ──────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 { color: var(--text-primary); font-weight: 700; }
+.text-muted { color: var(--text-secondary) !important; }
 
-/* Glassmorphism Cards */
+/* ── Cards ───────────────────────────────────────────────────────── */
 .card, .glass-card {
     background: var(--bg-surface);
     border: 1px solid var(--border);
     border-radius: 16px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform .2s ease, box-shadow .2s ease;
 }
+.card:hover { box-shadow: 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -2px rgba(0,0,0,.05); }
+.card-header { background: transparent; border-bottom: 1px solid var(--border); }
 
-.card:hover {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
+/* ── Tables ──────────────────────────────────────────────────────── */
+.table { color: var(--text-primary); }
+.table > :not(caption) > * > * { background: transparent; color: var(--text-primary); border-bottom: 1px solid var(--border); }
+.table-hover tbody tr:hover > * { background: var(--bg-surface-hover) !important; color: var(--text-primary) !important; }
+thead th { font-size: .85rem; letter-spacing: .5px; text-transform: uppercase; font-weight: 600; color: var(--text-secondary) !important; white-space: nowrap; }
+.table-responsive { -webkit-overflow-scrolling: touch; }
 
-.card-header {
-    background: transparent;
-    border-bottom: 1px solid var(--border);
-}
-
-/* Tables */
-.table {
-    color: var(--text-primary);
-}
-.table > :not(caption) > * > * {
-    background: transparent;
-    color: var(--text-primary);
-    border-bottom: 1px solid var(--border);
-}
-.table-hover tbody tr:hover > * {
-    background: var(--bg-surface-hover) !important;
-    color: var(--text-primary) !important;
-}
-thead th {
-    font-size: 0.85rem;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    font-weight: 600;
-    color: var(--text-secondary) !important;
-}
-
-/* Inputs and Forms */
+/* ── Inputs ──────────────────────────────────────────────────────── */
 .form-control, .form-select {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(255,255,255,.05);
     border: 1px solid var(--border);
     color: var(--text-primary);
     border-radius: 10px;
-    transition: all 0.2s ease;
+    transition: all .2s ease;
 }
 .form-control:focus, .form-select:focus {
-    background-color: rgba(255, 255, 255, 0.08);
+    background-color: rgba(255,255,255,.08);
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+    box-shadow: 0 0 0 3px rgba(59,130,246,.25);
     color: var(--text-primary);
 }
-.form-control::placeholder {
-    color: var(--text-secondary);
-}
-.form-select option {
-    background-color: var(--bg-surface);
-    color: var(--text-primary);
-}
+.form-control::placeholder { color: var(--text-secondary); }
+.form-select option { background-color: var(--bg-surface); color: var(--text-primary); }
 
-/* Badges */
-.badge {
-    padding: 0.4em 0.8em;
-    border-radius: 6px;
-    font-weight: 500;
-    letter-spacing: 0.3px;
-}
-.bg-success { background-color: rgba(16, 185, 129, 0.2) !important; color: #34d399 !important; border: 1px solid rgba(16, 185, 129, 0.3); }
-.bg-warning { background-color: rgba(245, 158, 11, 0.2) !important; color: #fbbf24 !important; border: 1px solid rgba(245, 158, 11, 0.3); }
-.bg-danger { background-color: rgba(239, 68, 68, 0.2) !important; color: #f87171 !important; border: 1px solid rgba(239, 68, 68, 0.3); }
-.bg-info { background-color: rgba(56, 189, 248, 0.2) !important; color: #7dd3fc !important; border: 1px solid rgba(56, 189, 248, 0.3); }
-.bg-secondary { background-color: rgba(148, 163, 184, 0.2) !important; color: #cbd5e1 !important; border: 1px solid rgba(148, 163, 184, 0.3); }
+/* ── Badges ──────────────────────────────────────────────────────── */
+.badge { padding: .4em .8em; border-radius: 6px; font-weight: 500; letter-spacing: .3px; }
+.bg-success { background-color: rgba(16,185,129,.2) !important; color: #34d399 !important; border: 1px solid rgba(16,185,129,.3); }
+.bg-warning { background-color: rgba(245,158,11,.2) !important; color: #fbbf24 !important; border: 1px solid rgba(245,158,11,.3); }
+.bg-danger  { background-color: rgba(239,68,68,.2) !important;  color: #f87171 !important; border: 1px solid rgba(239,68,68,.3); }
+.bg-info    { background-color: rgba(56,189,248,.2) !important; color: #7dd3fc !important; border: 1px solid rgba(56,189,248,.3); }
+.bg-secondary { background-color: rgba(148,163,184,.2) !important; color: #cbd5e1 !important; border: 1px solid rgba(148,163,184,.3); }
 
-/* Buttons */
-.btn {
-    border-radius: 10px;
-    font-weight: 500;
-    padding: 0.5rem 1.2rem;
-    transition: all 0.2s;
-}
+/* ── Buttons ─────────────────────────────────────────────────────── */
+.btn { border-radius: 10px; font-weight: 500; padding: .5rem 1.2rem; transition: all .2s; }
 .btn-primary {
     background: linear-gradient(135deg, var(--primary), #2563eb);
     border: none;
-    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 6px -1px rgba(59,130,246,.3);
 }
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 8px -1px rgba(59, 130, 246, 0.4);
-}
-.btn:active {
-    transform: translateY(0);
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 8px -1px rgba(59,130,246,.4); }
+.btn:active { transform: translateY(0); }
+
+/* ── Animations ──────────────────────────────────────────────────── */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.animate-fade-in { animation: fadeIn .4s ease forwards; }
+
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+.skeleton-box { background-color: var(--bg-surface-hover); border-radius: 6px; animation: pulse 2s cubic-bezier(.4,0,.6,1) infinite; }
+
+/* ── Mobile Header ───────────────────────────────────────────────── */
+.mobile-header {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--mobile-header-height);
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    z-index: 900;
+    align-items: center;
+    padding: 0 16px;
+    gap: 12px;
 }
 
-/* Animations */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+/* ── Sidebar Overlay (mobile) ────────────────────────────────────── */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.6);
+    z-index: 1100;
+    backdrop-filter: blur(2px);
+}
+.sidebar-overlay.active { display: block; }
+
+/* ── Bottom Nav (mobile) ─────────────────────────────────────────── */
+.bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--bottom-nav-height);
+    background: var(--bg-surface);
+    border-top: 1px solid var(--border);
+    z-index: 900;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 4px;
+}
+.bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 6px 10px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: 0.65rem;
+    font-weight: 500;
+    transition: all .2s;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    min-width: 52px;
+}
+.bottom-nav-item.active,
+.bottom-nav-item:active {
+    color: var(--primary);
+}
+.bottom-nav-item svg { transition: transform .2s; }
+.bottom-nav-item.active svg { transform: translateY(-2px); }
+
+/* ── Employee Mobile Card ────────────────────────────────────────── */
+.emp-card-mobile {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+    transition: transform .2s;
+}
+.emp-card-mobile:active { transform: scale(.98); }
+
+/* ── Page wrapper helpers ────────────────────────────────────────── */
+.page-scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* ================================================================= */
+/* RESPONSIVE BREAKPOINTS                                             */
+/* ================================================================= */
+
+/* ── Tablet (768px – 1199px): icon-only sidebar ────────────────── */
+@media (max-width: 1199px) and (min-width: 768px) {
+    :root { --sidebar-width: var(--sidebar-collapsed-width); }
+
+    .sidebar-label { display: none !important; }
+    .sidebar-logo-text { display: none !important; }
+    .sidebar-logout-text { display: none !important; }
+
+    .sidebar-nav-link {
+        justify-content: center !important;
+        padding: 12px !important;
+    }
+    .sidebar-logo { justify-content: center !important; padding: 16px 8px !important; }
+    .sidebar-logout { justify-content: center !important; }
 }
 
-.animate-fade-in {
-    animation: fadeIn 0.4s ease forwards;
+/* ── Mobile (< 768px): drawer sidebar + bottom nav ─────────────── */
+@media (max-width: 767px) {
+    :root { --sidebar-width: 260px; }
+
+    /* Show mobile header & bottom nav */
+    .mobile-header { display: flex; }
+    .bottom-nav { display: flex; }
+
+    /* Hide desktop sidebar by default; show as drawer when .is-open */
+    .sidebar-root {
+        transform: translateX(-100%);
+        transition: transform .3s cubic-bezier(.4,0,.2,1);
+        top: 0 !important;
+        height: 100vh !important;
+        z-index: 1200 !important;
+    }
+    .sidebar-root.is-open { transform: translateX(0); }
+
+    /* Push main content down for mobile header; add bottom padding for bottom nav */
+    .layout-main {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding-top: calc(var(--mobile-header-height) + 16px) !important;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        padding-bottom: calc(var(--bottom-nav-height) + 16px) !important;
+    }
+
+    /* Page headings — smaller on mobile */
+    h1 { font-size: 1.4rem !important; }
+    h2 { font-size: 1.2rem !important; }
+
+    /* Header action row — stack on mobile */
+    .page-header-row {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+    }
+    .page-header-actions { width: 100%; }
+    .page-header-actions .btn { width: 100%; justify-content: center; }
+
+    /* Forms: full-width fields */
+    .col-md-2, .col-md-3, .col-md-4, .col-md-6 { flex: 0 0 100%; max-width: 100%; }
+
+    /* Notification panel — full width on mobile */
+    .notif-panel { width: 100% !important; right: -100% !important; }
+    .notif-panel.is-open { right: 0 !important; }
+
+    /* Stat cards — 2 per row on mobile */
+    .col-md-6.col-xl-3 { flex: 0 0 50%; max-width: 50%; }
+
+    /* Quick actions — 2 per row */
+    .col-sm-6.col-md-3 { flex: 0 0 50%; max-width: 50%; }
+
+    /* AddEmployee / EditEmployee: full-width on mobile */
+    .col-xl-10 { flex: 0 0 100%; max-width: 100%; }
 }
 
-/* Skeleton Loading */
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: .5; }
+/* ── Very small phones (< 400px) ───────────────────────────────── */
+@media (max-width: 400px) {
+    .col-md-6.col-xl-3 { flex: 0 0 100%; max-width: 100%; }
+    .col-sm-6.col-md-3 { flex: 0 0 100%; max-width: 100%; }
 }
 
-.skeleton-box {
-    background-color: var(--bg-surface-hover);
-    border-radius: 6px;
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+/* ================================================================= */
+/* MOBILE PAGE-SPECIFIC FIXES                                         */
+/* ================================================================= */
+
+/* ── Page action bar (filter + buttons) ─────────────────────────── */
+.page-action-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* ── Leave tabs: horizontal scroll on mobile ─────────────────────── */
+.leave-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+.leave-tabs::-webkit-scrollbar { display: none; }
+
+/* ── Kanban board: horizontal scroll on mobile ───────────────────── */
+.kanban-board {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+    align-items: flex-start;
+}
+.kanban-board::-webkit-scrollbar { height: 4px; }
+.kanban-column {
+    min-width: 260px;
+    flex-shrink: 0;
+}
+
+/* ── Modal scroll on mobile ──────────────────────────────────────── */
+@media (max-width: 767px) {
+    .modal-dialog {
+        margin: 8px;
+        max-width: calc(100vw - 16px);
+    }
+    .modal-body {
+        overflow-y: auto;
+        max-height: calc(100vh - 180px);
+    }
+
+    /* Dashboard chart heights */
+    .chart-container { height: 200px !important; }
+
+    /* Page header stacks vertically */
+    .page-header-row {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+    }
+
+    /* Action bar stacks on very small screens */
+    .page-action-bar {
+        width: 100%;
+    }
+    .page-action-bar .form-control,
+    .page-action-bar .form-select {
+        flex: 1;
+        min-width: 120px;
+    }
+
+    /* Attendance / Payroll header filter inputs full-width */
+    .filter-date-input { width: 100% !important; }
+
+    /* Leave balance cards: 2 per row on small phones */
+    .leave-balance-col { flex: 0 0 50%; max-width: 50%; }
+
+    /* Employee Detail page: full width tabs */
+    .emp-detail-tabs .nav-link { padding: 8px 12px !important; font-size: 0.8rem !important; }
+
+    /* Payslip modal: full screen on mobile */
+    .modal-dialog.modal-lg { max-width: 100%; margin: 4px; }
+    .modal-body.p-5 { padding: 20px !important; }
+
+    /* Report table: smaller font */
+    .table { font-size: 0.8rem; }
+    .table th, .table td { padding: 8px 6px !important; }
+
+    /* Bottom padding for last card to clear bottom nav */
+    .animate-fade-in { padding-bottom: 4px; }
+}
+
+@media (max-width: 400px) {
+    .leave-balance-col { flex: 0 0 100%; max-width: 100%; }
+    .chart-container { height: 160px !important; }
 }
