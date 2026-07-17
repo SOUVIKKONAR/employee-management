@@ -10,10 +10,11 @@ import {
     LogOut,
     FileText,
     Settings,
-    Bell
+    Bell,
+    X
 } from "lucide-react";
 
-function Sidebar({ onNotificationClick }) {
+function Sidebar({ onNotificationClick, isOpen, onClose }) {
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -36,79 +37,151 @@ function Sidebar({ onNotificationClick }) {
         { path: "/settings", label: "Settings", Icon: Settings },
     ];
 
+    // Close sidebar on mobile when a nav link is clicked
+    const handleNavClick = () => {
+        if (onClose) onClose();
+    };
+
     return (
-        <div style={{
-            width: "var(--sidebar-width)",
-            background: "var(--bg-surface)",
-            borderRight: "1px solid var(--border)",
-            height: "100vh",
-            position: "fixed",
-            left: 0,
-            top: 0,
-            display: "flex",
-            flexDirection: "column",
-            zIndex: 1000
-        }}>
-            <div className="p-4 d-flex align-items-center gap-2 mb-4" style={{ borderBottom: "1px solid var(--border)" }}>
-                <div style={{ background: "linear-gradient(135deg, #3b82f6, #2563eb)", padding: "8px", borderRadius: "10px" }}>
-                    <Building2 size={24} color="white" />
+        <div
+            className={`sidebar-root${isOpen ? " is-open" : ""}`}
+            style={{
+                width: "var(--sidebar-width)",
+                background: "var(--bg-surface)",
+                borderRight: "1px solid var(--border)",
+                height: "100vh",
+                position: "fixed",
+                left: 0,
+                top: 0,
+                display: "flex",
+                flexDirection: "column",
+                zIndex: 1200,
+                overflowY: "auto",
+                overflowX: "hidden",
+            }}
+        >
+            {/* Logo + mobile close button */}
+            <div
+                className="sidebar-logo p-4 d-flex align-items-center gap-2 mb-2"
+                style={{ borderBottom: "1px solid var(--border)", minHeight: "64px" }}
+            >
+                <div style={{ background: "linear-gradient(135deg, #3b82f6, #2563eb)", padding: "7px", borderRadius: "10px", flexShrink: 0 }}>
+                    <Building2 size={22} color="white" />
                 </div>
-                <span className="fw-bold fs-5" style={{ background: "linear-gradient(90deg, #60a5fa, #3b82f6)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                <span
+                    className="sidebar-logo-text fw-bold fs-5"
+                    style={{
+                        background: "linear-gradient(90deg, #60a5fa, #3b82f6)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                    }}
+                >
                     EMS Portal
                 </span>
+
+                {/* Close button — only visible on mobile */}
+                <button
+                    onClick={onClose}
+                    style={{
+                        marginLeft: "auto",
+                        background: "transparent",
+                        border: "none",
+                        color: "var(--text-secondary)",
+                        cursor: "pointer",
+                        display: "none", // shown via CSS on mobile
+                        padding: "4px",
+                        borderRadius: "6px",
+                    }}
+                    className="sidebar-close-btn"
+                    aria-label="Close menu"
+                >
+                    <X size={20} />
+                </button>
             </div>
 
-            <div className="flex-grow-1 overflow-auto px-3">
-                <ul className="nav flex-column gap-2">
+            {/* Nav items */}
+            <div className="flex-grow-1 overflow-auto px-2 py-1">
+                <ul className="nav flex-column gap-1">
                     {navItems.map(({ path, label, Icon }) => (
                         <li className="nav-item" key={path}>
                             <Link
                                 to={path}
-                                className="nav-link d-flex align-items-center gap-3"
+                                onClick={handleNavClick}
+                                className="sidebar-nav-link nav-link d-flex align-items-center gap-3"
                                 style={{
                                     color: isActive(path) ? "white" : "var(--text-secondary)",
-                                    background: isActive(path) ? "rgba(59, 130, 246, 0.15)" : "transparent",
+                                    background: isActive(path)
+                                        ? "linear-gradient(135deg, rgba(59,130,246,0.2), rgba(37,99,235,0.1))"
+                                        : "transparent",
                                     borderRadius: "10px",
-                                    padding: "10px 16px",
+                                    padding: "10px 14px",
                                     fontWeight: isActive(path) ? "600" : "500",
-                                    transition: "all 0.2s"
+                                    transition: "all 0.2s",
+                                    borderLeft: isActive(path) ? "3px solid #3b82f6" : "3px solid transparent",
+                                    whiteSpace: "nowrap",
                                 }}
                             >
-                                <Icon size={20} color={isActive(path) ? "#60a5fa" : "currentColor"} />
-                                {label}
+                                <Icon size={19} color={isActive(path) ? "#60a5fa" : "currentColor"} style={{ flexShrink: 0 }} />
+                                <span className="sidebar-label">{label}</span>
                             </Link>
                         </li>
                     ))}
+
+                    {/* Notifications */}
                     <li className="nav-item">
                         <button
-                            className="nav-link d-flex align-items-center gap-3 w-100 border-0 text-start"
+                            className="sidebar-nav-link nav-link d-flex align-items-center gap-3 w-100 border-0 text-start"
                             style={{
                                 color: "var(--text-secondary)",
                                 background: "transparent",
                                 borderRadius: "10px",
-                                padding: "10px 16px",
+                                padding: "10px 14px",
                                 fontWeight: "500",
-                                transition: "all 0.2s"
+                                transition: "all 0.2s",
+                                borderLeft: "3px solid transparent",
+                                whiteSpace: "nowrap",
+                                cursor: "pointer",
                             }}
-                            onClick={onNotificationClick}
+                            onClick={() => { onNotificationClick?.(); handleNavClick(); }}
                         >
-                            <Bell size={20} color="currentColor" />
-                            Notifications
+                            <Bell size={19} color="currentColor" style={{ flexShrink: 0 }} />
+                            <span className="sidebar-label">Notifications</span>
                         </button>
                     </li>
                 </ul>
             </div>
 
+            {/* Logout */}
             <div className="p-3 mt-auto" style={{ borderTop: "1px solid var(--border)" }}>
                 <button
                     onClick={handleLogout}
-                    className="btn w-100 d-flex align-items-center justify-content-center gap-2"
-                    style={{ background: "rgba(239, 68, 68, 0.1)", color: "#f87171", border: "1px solid rgba(239, 68, 68, 0.2)", borderRadius: "10px" }}
+                    className="sidebar-logout btn w-100 d-flex align-items-center justify-content-center gap-2"
+                    style={{
+                        background: "rgba(239,68,68,0.1)",
+                        color: "#f87171",
+                        border: "1px solid rgba(239,68,68,0.2)",
+                        borderRadius: "10px",
+                        whiteSpace: "nowrap",
+                    }}
                 >
-                    <LogOut size={18} />
-                    Logout
+                    <LogOut size={17} style={{ flexShrink: 0 }} />
+                    <span className="sidebar-logout-text">Logout</span>
                 </button>
             </div>
+
+            <style>{`
+                /* Show close button only on mobile */
+                @media (max-width: 767px) {
+                    .sidebar-close-btn { display: block !important; }
+                }
+                /* Hover effect */
+                .sidebar-nav-link:hover {
+                    background: rgba(59,130,246,0.08) !important;
+                    color: white !important;
+                }
+            `}</style>
         </div>
     );
 }
