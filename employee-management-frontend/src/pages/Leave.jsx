@@ -86,7 +86,7 @@ function Leave() {
 
     return (
         <div className="animate-fade-in">
-            <div className="d-flex justify-content-between align-items-center mb-4">
+            <div className="d-flex justify-content-between align-items-center mb-4 page-header-row">
                 <div>
                     <h1 className="fw-bold mb-1 d-flex align-items-center gap-2">
                         <Umbrella size={28} className="text-warning" /> Leave Management
@@ -101,7 +101,7 @@ function Leave() {
             {/* Balances Overview */}
             <div className="row g-3 mb-4">
                 {balances.slice(0,4).map(b => (
-                    <div className="col-md-3" key={b.id}>
+                    <div className="col-6 col-md-3 leave-balance-col" key={b.id}>
                         <div className="card border-0 p-3 shadow-sm h-100">
                             <h6 className="fw-bold text-muted mb-2">{b.employee_name} ({b.leave_type})</h6>
                             <div className="d-flex justify-content-between align-items-end">
@@ -165,18 +165,17 @@ function Leave() {
             )}
 
             {/* Tabs */}
-            <ul className="nav nav-tabs mb-3 border-0 gap-2">
+            <div className="leave-tabs mb-3">
                 {["All", "Casual", "Sick", "Earned"].map(tab => (
-                    <li className="nav-item" key={tab}>
-                        <button 
-                            className={`nav-link border-0 rounded-pill px-4 ${activeTab === tab ? "active bg-primary text-white fw-bold" : "bg-transparent text-muted"}`}
-                            onClick={() => setActiveTab(tab)}
-                        >
-                            {tab}
-                        </button>
-                    </li>
+                    <button 
+                        key={tab}
+                        className={`btn btn-sm rounded-pill px-4 ${activeTab === tab ? "btn-primary fw-bold" : "btn-outline-secondary"}`}
+                        onClick={() => setActiveTab(tab)}
+                    >
+                        {tab}
+                    </button>
                 ))}
-            </ul>
+            </div>
 
             {/* Table */}
             <div className="card">
