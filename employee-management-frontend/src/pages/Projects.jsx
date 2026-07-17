@@ -80,7 +80,7 @@ function Projects() {
 
     return (
         <div className="animate-fade-in">
-            <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+            <div className="d-flex justify-content-between align-items-center mb-4 page-header-row">
                 <div>
                     <h1 className="fw-bold mb-1 d-flex align-items-center gap-2">
                         <Rocket size={28} className="text-warning" /> Projects
@@ -213,13 +213,14 @@ function Projects() {
                     </div>
                 </div>
             ) : (
-                <div className="row g-4" style={{ overflowX: "auto", flexWrap: "nowrap" }}>
+                <div className="kanban-board">
                     {Object.keys(groupedProjects).map(status => (
-                        <div className="col-11 col-md-4 col-lg-3 d-flex flex-column gap-3" key={status}>
+                        <div className="kanban-column" key={status}>
                             <h6 className="fw-bold d-flex justify-content-between align-items-center text-muted px-2">
                                 {status} 
                                 <span className="badge bg-secondary rounded-pill">{groupedProjects[status].length}</span>
                             </h6>
+                            <div className="d-flex flex-column gap-3">
                             {groupedProjects[status].map(p => (
                                 <div className="card glass-card border-0 shadow-sm" key={p.id}>
                                     <div className="card-body p-3">
@@ -247,6 +248,7 @@ function Projects() {
                                     <span className="text-muted small">No projects</span>
                                 </div>
                             )}
+                            </div>
                         </div>
                     ))}
                 </div>
