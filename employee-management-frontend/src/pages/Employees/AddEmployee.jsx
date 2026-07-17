@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../../services/api";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../../components/Navbar";
 import CreatableDropdown from "../../components/CreatableDropdown";
 import { toast } from "react-toastify";
 import { UserPlus, Save, MapPin } from "lucide-react";
@@ -169,8 +168,7 @@ function AddEmployee() {
 
     return (
         <>
-            <Navbar />
-            <div className="container-fluid py-4 px-4" style={{ background: "#f0f2f5", minHeight: "100vh" }}>
+            <div className="container-fluid py-2 px-1 px-md-3" style={{ background: "#f0f2f5", minHeight: "100vh" }}>
                 <div className="row justify-content-center">
                     <div className="col-xl-10">
                         <div className="card border-0 shadow-sm" style={{ borderRadius: "16px", overflow: "hidden" }}>

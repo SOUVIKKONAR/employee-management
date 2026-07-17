@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../../services/api";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import Navbar from "../../components/Navbar";
 import { toast } from "react-toastify";
 import {
     User, Phone, Mail, Calendar, Building2, Tag, Shield, Banknote,
@@ -36,28 +35,25 @@ function EmployeeDetail() {
     }, [id, navigate]);
 
     if (loading) return (
-        <>
-            <Navbar />
-            <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "80vh" }}>
-                <div className="text-center">
-                    <div className="spinner-border text-primary" style={{ width: "3rem", height: "3rem" }} />
-                    <p className="mt-3 text-muted">Loading employee profile...</p>
-                </div>
+        <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "60vh" }}>
+            <div className="text-center">
+                <div className="spinner-border text-primary" style={{ width: "3rem", height: "3rem" }} />
+                <p className="mt-3 text-muted">Loading employee profile...</p>
             </div>
-        </>
+        </div>
     );
 
     if (!employee) return null;
 
     const InfoCard = ({ icon: Icon, label, value, accent }) => (
-        <div className="d-flex align-items-center gap-3 mb-3 p-3 rounded-3" style={{ background: "#f8fafc", border: "1px solid #e2e8f0" }}>
+        <div className="d-flex align-items-center gap-3 mb-3 p-3 rounded-3" style={{ background: "var(--bg-main)", border: "1px solid var(--border)" }}>
             <div className="d-flex justify-content-center align-items-center rounded-circle flex-shrink-0"
-                style={{ width: "40px", height: "40px", background: accent ? `${accent}18` : "#f1f5f9", color: accent ?? "#64748b" }}>
+                style={{ width: "40px", height: "40px", background: accent ? `${accent}18` : "rgba(255,255,255,0.05)", color: accent ?? "var(--text-secondary)" }}>
                 <Icon size={18} />
             </div>
             <div className="overflow-hidden">
                 <div className="small text-muted fw-semibold text-uppercase" style={{ letterSpacing: "0.4px", fontSize: "0.72rem" }}>{label}</div>
-                <div className="fw-semibold text-truncate" style={{ color: "#0f172a" }}>{value || <span className="text-muted fst-italic">Not provided</span>}</div>
+                <div className="fw-semibold text-truncate" style={{ color: "var(--text-primary)" }}>{value || <span className="text-muted fst-italic">Not provided</span>}</div>
             </div>
         </div>
     );
@@ -65,7 +61,7 @@ function EmployeeDetail() {
     const SectionCard = ({ title, icon: Icon, children, color = "#667eea" }) => (
         <div className="card border-0 shadow-sm h-100" style={{ borderRadius: "16px" }}>
             <div className="card-body p-4">
-                <h5 className="fw-bold mb-4 d-flex align-items-center gap-2" style={{ color: "#1a1a2e" }}>
+                <h5 className="fw-bold mb-4 d-flex align-items-center gap-2" style={{ color: "var(--text-primary)" }}>
                     <span className="d-flex align-items-center justify-content-center rounded-2"
                         style={{ width: "32px", height: "32px", background: `${color}18`, color }}>
                         <Icon size={18} />
@@ -80,11 +76,9 @@ function EmployeeDetail() {
     const initials = `${employee.first_name[0]}${employee.last_name[0]}`.toUpperCase();
 
     return (
-        <>
-            <Navbar />
-            <div className="container-fluid py-4 px-4" style={{ background: "#f0f2f5", minHeight: "100vh" }}>
-                <div className="row justify-content-center">
-                    <div className="col-xl-11">
+        <div className="animate-fade-in">
+            <div className="row justify-content-center">
+                <div className="col-xl-11">
 
                         {/* Back + Page title */}
                         <div className="mb-4 d-flex align-items-center gap-3">
@@ -117,7 +111,7 @@ function EmployeeDetail() {
                                         </div>
                                         {/* Info */}
                                         <div className="flex-grow-1 text-center text-md-start">
-                                            <h3 className="fw-bold mb-1" style={{ color: "#0f172a" }}>
+                                            <h3 className="fw-bold mb-1" style={{ color: "var(--text-primary)" }}>
                                                 {employee.first_name} {employee.last_name}
                                             </h3>
                                             <p className="text-muted mb-2 fs-6">
@@ -200,10 +194,10 @@ function EmployeeDetail() {
                                             {projects.map((p) => (
                                                 <div key={p.id} className="col-md-4 col-lg-3">
                                                     <div className="p-3 rounded-3 d-flex align-items-center gap-2"
-                                                        style={{ background: "#f0fdf4", border: "1px solid #bbf7d0" }}>
+                                                        style={{ background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.2)" }}>
                                                         <Rocket size={16} style={{ color: "#16a34a", flexShrink: 0 }} />
                                                         <div className="overflow-hidden">
-                                                            <div className="fw-semibold text-truncate" style={{ color: "#0f172a", fontSize: "0.9rem" }}>
+                                                            <div className="fw-semibold text-truncate" style={{ color: "var(--text-primary)", fontSize: "0.9rem" }}>
                                                                 {p.project_name}
                                                             </div>
                                                             <div className="text-muted small">Assigned {p.assigned_date}</div>
@@ -222,10 +216,9 @@ function EmployeeDetail() {
                             </div>
 
                         </div>
-                    </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
 

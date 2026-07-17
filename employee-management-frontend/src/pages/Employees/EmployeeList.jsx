@@ -1,9 +1,8 @@
-import Navbar from "../../components/Navbar";
 import { Link } from "react-router-dom";
 import { useEffect, useState, useCallback } from "react";
 import api from "../../services/api";
 import { toast } from "react-toastify";
-import { Users, UserPlus, Search, Pencil, Trash2, ChevronLeft, ChevronRight, Eye } from "lucide-react";
+import { Users, UserPlus, Search, Pencil, Trash2, ChevronLeft, ChevronRight, Eye, Building2, Tag } from "lucide-react";
 import ConfirmModal from "../../components/ConfirmModal";
 
 const STATUS_BADGE = {
@@ -39,9 +38,7 @@ function EmployeeList() {
             .finally(() => setLoading(false));
     }, [searchTerm]);
 
-    useEffect(() => {
-        loadEmployees(1, "");
-    }, []);
+    useEffect(() => { loadEmployees(1, ""); }, []);
 
     const confirmDelete = (id, name) => {
         setConfirmModal({ isOpen: true, id, name });
@@ -62,54 +59,56 @@ function EmployeeList() {
     };
 
     const handleSearch = () => loadEmployees(1, searchTerm);
-
-    const handleKeyDown = (e) => {
-        if (e.key === "Enter") handleSearch();
-    };
+    const handleKeyDown = (e) => { if (e.key === "Enter") handleSearch(); };
 
     return (
         <>
-            <Navbar />
-            <div className="container-fluid py-4 px-4" style={{ background: "#f0f2f5", minHeight: "100vh" }}>
+            <div className="animate-fade-in">
 
-                {/* Header */}
+                {/* ── Header ─────────────────────────────────────────── */}
                 <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                     <div>
-                        <h1 className="fw-bold mb-0 d-flex align-items-center gap-2" style={{ color: "#1a1a2e" }}>
-                            <Users size={28} /> Employees
+                        <h1 className="fw-bold mb-0 d-flex align-items-center gap-2">
+                            <Users size={26} /> Employees
                         </h1>
-                        <p className="text-muted mb-0">
+                        <p className="text-muted mb-0" style={{ fontSize: "0.88rem" }}>
                             {totalCount > 0 ? `${totalCount} employee${totalCount !== 1 ? "s" : ""} found` : "Manage your workforce"}
                         </p>
                     </div>
-                    <Link to="/add" className="btn fw-semibold d-flex align-items-center gap-2"
-                        style={{ background: "linear-gradient(135deg, #667eea, #764ba2)", color: "white", border: "none", borderRadius: "10px", padding: "10px 22px" }}>
-                        <UserPlus size={17} /> Add Employee
+                    <Link
+                        to="/add"
+                        className="btn fw-semibold d-flex align-items-center gap-2"
+                        style={{ background: "linear-gradient(135deg, #667eea, #764ba2)", color: "white", border: "none", borderRadius: "10px", padding: "10px 20px" }}
+                    >
+                        <UserPlus size={16} /> Add Employee
                     </Link>
                 </div>
 
-                {/* Search */}
+                {/* ── Search ─────────────────────────────────────────── */}
                 <div className="card border-0 shadow-sm mb-4" style={{ borderRadius: "14px" }}>
                     <div className="card-body p-3">
                         <div className="input-group">
-                            <span className="input-group-text bg-white border-end-0 d-flex align-items-center">
-                                <Search size={16} className="text-muted" />
+                            <span className="input-group-text border-end-0 d-flex align-items-center" style={{ background: "rgba(255,255,255,0.05)", borderColor: "var(--border)" }}>
+                                <Search size={15} className="text-muted" />
                             </span>
                             <input
                                 type="text"
                                 className="form-control border-start-0 ps-0"
-                                placeholder="Search by name, code or email — press Enter"
+                                placeholder="Search by name, code or email…"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 onKeyDown={handleKeyDown}
                                 style={{ outline: "none", boxShadow: "none" }}
                             />
-                            <button className="btn btn-primary px-4" onClick={handleSearch} style={{ borderRadius: "0 10px 10px 0" }}>
+                            <button className="btn btn-primary px-3" onClick={handleSearch} style={{ borderRadius: "0 10px 10px 0" }}>
                                 Search
                             </button>
                             {searchTerm && (
-                                <button className="btn btn-outline-secondary ms-2" style={{ borderRadius: "10px" }}
-                                    onClick={() => { setSearchTerm(""); loadEmployees(1, ""); }}>
+                                <button
+                                    className="btn btn-outline-secondary ms-2"
+                                    style={{ borderRadius: "10px" }}
+                                    onClick={() => { setSearchTerm(""); loadEmployees(1, ""); }}
+                                >
                                     Clear
                                 </button>
                             )}
@@ -117,98 +116,179 @@ function EmployeeList() {
                     </div>
                 </div>
 
-                {/* Table */}
-                <div className="card border-0 shadow-sm" style={{ borderRadius: "14px", overflow: "hidden" }}>
-                    <div className="card-body p-0">
-                        {loading ? (
-                            <div className="text-center py-5">
-                                <div className="spinner-border text-primary" role="status" />
-                                <p className="mt-3 text-muted">Loading employees...</p>
-                            </div>
-                        ) : (
-                            <div className="table-responsive" style={{ maxWidth: "100%", overflowX: "auto" }}>
-                                <table className="table table-hover align-middle mb-0" style={{ minWidth: "1280px" }}>
-                                    <thead style={{ background: "linear-gradient(135deg, #1a1a2e, #16213e)", color: "white" }}>
-                                        <tr>
-                                            {["#", "Code", "Name", "Email", "Phone", "Department", "Designation", "Status", "Joined", "Actions"].map((h) => (
-                                                <th key={h} className="py-3 px-3 fw-semibold border-0" style={{ whiteSpace: "nowrap" }}>{h}</th>
-                                            ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {employees.length > 0 ? employees.map((emp, idx) => (
-                                            <tr key={emp.id} style={{ transition: "background 0.15s" }}>
-                                                <td className="px-3 text-muted">{(currentPage - 1) * 10 + idx + 1}</td>
-                                                <td className="px-3"><span className="badge bg-light text-dark border">{emp.emp_code}</span></td>
-                                                <td className="px-3 fw-semibold">{emp.first_name} {emp.last_name}</td>
-                                                <td className="px-3 text-muted">{emp.email}</td>
-                                                <td className="px-3">{emp.phone_no}</td>
-                                                <td className="px-3">{emp.department_name ?? "–"}</td>
-                                                <td className="px-3">{emp.designation_name ?? "–"}</td>
-                                                <td className="px-3">
-                                                    <span className={`badge bg-${STATUS_BADGE[emp.status] ?? "secondary"}`}>
-                                                        {emp.status}
-                                                    </span>
-                                                </td>
-                                                <td className="px-3 text-muted" style={{ whiteSpace: "nowrap" }}>{emp.joining_date}</td>
-                                                <td className="px-3">
-                                                    <div className="d-flex gap-2 flex-nowrap">
-                                                        <Link to={`/employees/${emp.id}`} className="btn btn-sm fw-semibold d-flex align-items-center gap-1"
-                                                            style={{ background: "#4facfe", color: "white", borderRadius: "8px" }}>
-                                                            <Eye size={13} /> View
-                                                        </Link>
-                                                        <Link to={`/edit/${emp.id}`} className="btn btn-sm fw-semibold d-flex align-items-center gap-1"
-                                                            style={{ background: "#667eea", color: "white", borderRadius: "8px" }}>
-                                                            <Pencil size={13} /> Edit
-                                                        </Link>
-                                                        <button
-                                                            className="btn btn-sm fw-semibold d-flex align-items-center gap-1"
-                                                            style={{ background: "#f5576c", color: "white", borderRadius: "8px" }}
-                                                            onClick={() => confirmDelete(emp.id, `${emp.first_name} ${emp.last_name}`)}
-                                                            disabled={deletingId === emp.id}
-                                                        >
-                                                            {deletingId === emp.id ? "..." : <><Trash2 size={13} />Delete</>}
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        )) : (
-                                            <tr>
-                                                <td colSpan="10" className="text-center py-5 text-muted">
-                                                    <div className="mb-2"><Search size={40} strokeWidth={1.2} /></div>
-                                                    <p>No employees found</p>
-                                                </td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
+                {/* ── Loading ─────────────────────────────────────────── */}
+                {loading ? (
+                    <div className="text-center py-5">
+                        <div className="spinner-border text-primary" role="status" />
+                        <p className="mt-3 text-muted">Loading employees…</p>
                     </div>
+                ) : employees.length === 0 ? (
+                    <div className="card border-0 shadow-sm text-center py-5">
+                        <div className="mb-2"><Search size={40} strokeWidth={1.2} className="text-muted" /></div>
+                        <p className="text-muted">No employees found</p>
+                    </div>
+                ) : (
+                    <>
+                        {/* ── Desktop Table ──────────────────────────── */}
+                        <div className="card border-0 shadow-sm d-none d-md-block" style={{ borderRadius: "14px", overflow: "hidden" }}>
+                            <div className="card-body p-0">
+                                <div className="table-responsive">
+                                    <table className="table table-hover align-middle mb-0" style={{ minWidth: "900px" }}>
+                                        <thead style={{ background: "linear-gradient(135deg, #1a1a2e, #16213e)", color: "white" }}>
+                                            <tr>
+                                                {["#", "Code", "Name", "Email", "Phone", "Department", "Designation", "Status", "Joined", "Actions"].map((h) => (
+                                                    <th key={h} className="py-3 px-3 fw-semibold border-0">{h}</th>
+                                                ))}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {employees.map((emp, idx) => (
+                                                <tr key={emp.id} style={{ transition: "background 0.15s" }}>
+                                                    <td className="px-3 text-muted">{(currentPage - 1) * 10 + idx + 1}</td>
+                                                    <td className="px-3"><span className="badge bg-light text-dark border">{emp.emp_code}</span></td>
+                                                    <td className="px-3 fw-semibold">{emp.first_name} {emp.last_name}</td>
+                                                    <td className="px-3 text-muted">{emp.email}</td>
+                                                    <td className="px-3">{emp.phone_no}</td>
+                                                    <td className="px-3">{emp.department_name ?? "–"}</td>
+                                                    <td className="px-3">{emp.designation_name ?? "–"}</td>
+                                                    <td className="px-3">
+                                                        <span className={`badge bg-${STATUS_BADGE[emp.status] ?? "secondary"}`}>{emp.status}</span>
+                                                    </td>
+                                                    <td className="px-3 text-muted" style={{ whiteSpace: "nowrap" }}>{emp.joining_date}</td>
+                                                    <td className="px-3">
+                                                        <div className="d-flex gap-2 flex-nowrap">
+                                                            <Link to={`/employees/${emp.id}`} className="btn btn-sm fw-semibold d-flex align-items-center gap-1"
+                                                                style={{ background: "#4facfe", color: "white", borderRadius: "8px" }}>
+                                                                <Eye size={13} /> View
+                                                            </Link>
+                                                            <Link to={`/edit/${emp.id}`} className="btn btn-sm fw-semibold d-flex align-items-center gap-1"
+                                                                style={{ background: "#667eea", color: "white", borderRadius: "8px" }}>
+                                                                <Pencil size={13} /> Edit
+                                                            </Link>
+                                                            <button
+                                                                className="btn btn-sm fw-semibold d-flex align-items-center gap-1"
+                                                                style={{ background: "#f5576c", color: "white", borderRadius: "8px" }}
+                                                                onClick={() => confirmDelete(emp.id, `${emp.first_name} ${emp.last_name}`)}
+                                                                disabled={deletingId === emp.id}
+                                                            >
+                                                                {deletingId === emp.id ? "…" : <><Trash2 size={13} />Delete</>}
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
 
-                    {/* Pagination */}
-                    {!loading && (nextPage || previousPage) && (
-                        <div className="card-footer bg-white border-top d-flex justify-content-center align-items-center gap-3 py-3">
-                            <button className="btn btn-outline-secondary btn-sm px-4 d-flex align-items-center gap-1" disabled={!previousPage}
-                                onClick={() => loadEmployees(currentPage - 1)}>
-                                <ChevronLeft size={15} /> Prev
-                            </button>
-                            <span className="fw-semibold text-muted">Page {currentPage}</span>
-                            <button className="btn btn-outline-secondary btn-sm px-4 d-flex align-items-center gap-1" disabled={!nextPage}
-                                onClick={() => loadEmployees(currentPage + 1)}>
-                                Next <ChevronRight size={15} />
-                            </button>
+                            {/* Desktop pagination */}
+                            {(nextPage || previousPage) && (
+                                <div className="card-footer border-top d-flex justify-content-center align-items-center gap-3 py-3" style={{ background: "var(--bg-surface)" }}>
+                                    <button className="btn btn-outline-secondary btn-sm px-4 d-flex align-items-center gap-1"
+                                        disabled={!previousPage} onClick={() => loadEmployees(currentPage - 1)}>
+                                        <ChevronLeft size={15} /> Prev
+                                    </button>
+                                    <span className="fw-semibold text-muted">Page {currentPage}</span>
+                                    <button className="btn btn-outline-secondary btn-sm px-4 d-flex align-items-center gap-1"
+                                        disabled={!nextPage} onClick={() => loadEmployees(currentPage + 1)}>
+                                        Next <ChevronRight size={15} />
+                                    </button>
+                                </div>
+                            )}
                         </div>
-                    )}
-                </div>
+
+                        {/* ── Mobile Card View ──────────────────────── */}
+                        <div className="d-md-none">
+                            {employees.map((emp) => (
+                                <div key={emp.id} className="emp-card-mobile">
+                                    {/* Top row: name + status badge */}
+                                    <div className="d-flex align-items-start justify-content-between gap-2 mb-2">
+                                        <div>
+                                            <div className="fw-bold" style={{ fontSize: "1rem", lineHeight: 1.3 }}>
+                                                {emp.first_name} {emp.last_name}
+                                            </div>
+                                            <div className="text-muted" style={{ fontSize: "0.78rem" }}>
+                                                {emp.emp_code}
+                                            </div>
+                                        </div>
+                                        <span className={`badge bg-${STATUS_BADGE[emp.status] ?? "secondary"} flex-shrink-0`}>
+                                            {emp.status}
+                                        </span>
+                                    </div>
+
+                                    {/* Meta info */}
+                                    <div className="d-flex flex-wrap gap-2 mb-3" style={{ fontSize: "0.8rem" }}>
+                                        {emp.department_name && (
+                                            <span className="d-flex align-items-center gap-1 text-muted">
+                                                <Building2 size={12} /> {emp.department_name}
+                                            </span>
+                                        )}
+                                        {emp.designation_name && (
+                                            <span className="d-flex align-items-center gap-1 text-muted">
+                                                <Tag size={12} /> {emp.designation_name}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    <div className="text-muted mb-3" style={{ fontSize: "0.8rem" }}>
+                                        📧 {emp.email}<br />
+                                        📞 {emp.phone_no}
+                                    </div>
+
+                                    {/* Actions */}
+                                    <div className="d-flex gap-2">
+                                        <Link
+                                            to={`/employees/${emp.id}`}
+                                            className="btn btn-sm fw-semibold flex-fill d-flex align-items-center justify-content-center gap-1"
+                                            style={{ background: "#4facfe", color: "white", borderRadius: "8px" }}
+                                        >
+                                            <Eye size={13} /> View
+                                        </Link>
+                                        <Link
+                                            to={`/edit/${emp.id}`}
+                                            className="btn btn-sm fw-semibold flex-fill d-flex align-items-center justify-content-center gap-1"
+                                            style={{ background: "#667eea", color: "white", borderRadius: "8px" }}
+                                        >
+                                            <Pencil size={13} /> Edit
+                                        </Link>
+                                        <button
+                                            className="btn btn-sm fw-semibold flex-fill d-flex align-items-center justify-content-center gap-1"
+                                            style={{ background: "#f5576c", color: "white", borderRadius: "8px" }}
+                                            onClick={() => confirmDelete(emp.id, `${emp.first_name} ${emp.last_name}`)}
+                                            disabled={deletingId === emp.id}
+                                        >
+                                            {deletingId === emp.id ? "…" : <><Trash2 size={13} />Delete</>}
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+
+                            {/* Mobile pagination */}
+                            {(nextPage || previousPage) && (
+                                <div className="d-flex justify-content-center align-items-center gap-3 py-3">
+                                    <button className="btn btn-outline-secondary btn-sm px-4 d-flex align-items-center gap-1"
+                                        disabled={!previousPage} onClick={() => loadEmployees(currentPage - 1)}>
+                                        <ChevronLeft size={15} /> Prev
+                                    </button>
+                                    <span className="fw-semibold text-muted">Page {currentPage}</span>
+                                    <button className="btn btn-outline-secondary btn-sm px-4 d-flex align-items-center gap-1"
+                                        disabled={!nextPage} onClick={() => loadEmployees(currentPage + 1)}>
+                                        Next <ChevronRight size={15} />
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </>
+                )}
             </div>
 
-            <ConfirmModal 
-                isOpen={confirmModal.isOpen} 
-                onClose={() => setConfirmModal({ isOpen: false, id: null, name: "" })} 
-                onConfirm={handleDelete} 
-                title="Delete Employee" 
-                message={`Are you sure you want to delete "${confirmModal.name}"? This action cannot be undone.`} 
+            <ConfirmModal
+                isOpen={confirmModal.isOpen}
+                onClose={() => setConfirmModal({ isOpen: false, id: null, name: "" })}
+                onConfirm={handleDelete}
+                title="Delete Employee"
+                message={`Are you sure you want to delete "${confirmModal.name}"? This action cannot be undone.`}
             />
         </>
     );
