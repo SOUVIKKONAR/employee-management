@@ -91,15 +91,15 @@ function Payroll() {
                 `}
             </style>
 
-            <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+            <div className="d-flex justify-content-between align-items-center mb-4 page-header-row">
                 <div>
                     <h1 className="fw-bold mb-1 d-flex align-items-center gap-2">
                         <Wallet size={28} className="text-success" /> Payroll
                     </h1>
                     <p className="text-muted mb-0">Manage employee salaries and payslips</p>
                 </div>
-                <div className="d-flex gap-2 align-items-center flex-wrap">
-                    <input type="month" className="form-control" value={filterMonth} onChange={(e) => setFilterMonth(e.target.value)} />
+                <div className="page-action-bar">
+                    <input type="month" className="form-control filter-date-input" value={filterMonth} onChange={(e) => setFilterMonth(e.target.value)} style={{ width: "160px" }} />
                     {filterMonth && <button className="btn btn-sm btn-outline-secondary" onClick={() => setFilterMonth("")}><X size={14}/></button>}
                     
                     <button className="btn btn-primary d-flex align-items-center gap-2" onClick={() => setShowForm(!showForm)}>
