@@ -36,17 +36,17 @@ function NotificationPanel({ isOpen, onClose }) {
                     style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 1040 }}
                 />
             )}
-            <div style={{
+            <div className={`notif-panel${isOpen ? " is-open" : ""}`} style={{
                 position: "fixed",
                 top: 0,
                 right: isOpen ? 0 : "-350px",
-                width: "350px",
+                width: "min(350px, 100vw)",
                 height: "100vh",
                 background: "var(--bg-surface)",
                 borderLeft: "1px solid var(--border)",
                 boxShadow: "-4px 0 15px rgba(0,0,0,0.3)",
                 transition: "right 0.3s ease",
-                zIndex: 1050,
+                zIndex: 1300,
                 display: "flex",
                 flexDirection: "column"
             }}>
