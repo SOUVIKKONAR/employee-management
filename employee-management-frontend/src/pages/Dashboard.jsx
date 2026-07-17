@@ -84,7 +84,7 @@ function Dashboard() {
                 <div className="col-lg-8">
                     <div className="card border-0 h-100 p-4">
                         <h6 className="fw-bold mb-4">Payroll Trend (Last 6 Months)</h6>
-                        <div style={{ height: "300px" }}>
+                        <div className="chart-container" style={{ height: "300px" }}>
                             {loading ? <div className="skeleton-box w-100 h-100 rounded"></div> : (
                                 <ResponsiveContainer width="100%" height="100%">
                                     <AreaChart data={payrollData}>
@@ -112,7 +112,7 @@ function Dashboard() {
                 <div className="col-lg-4">
                     <div className="card border-0 h-100 p-4">
                         <h6 className="fw-bold mb-4">Attendance Overview</h6>
-                        <div style={{ height: "300px" }}>
+                        <div className="chart-container" style={{ height: "300px" }}>
                             {loading ? <div className="skeleton-box w-100 h-100 rounded"></div> : (
                                 <ResponsiveContainer width="100%" height="100%">
                                     <PieChart>

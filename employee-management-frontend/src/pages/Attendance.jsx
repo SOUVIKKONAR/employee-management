@@ -105,15 +105,15 @@ function Attendance() {
 
     return (
         <div className="animate-fade-in">
-            <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+            <div className="d-flex justify-content-between align-items-center mb-4 page-header-row">
                 <div>
                     <h1 className="fw-bold mb-1 d-flex align-items-center gap-2">
                         <CalendarCheck size={28} className="text-primary" /> Attendance
                     </h1>
                     <p className="text-muted mb-0">Track daily check-in / check-out</p>
                 </div>
-                <div className="d-flex gap-2 align-items-center flex-wrap">
-                    <input type="date" className="form-control" value={filterDate} onChange={(e) => setFilterDate(e.target.value)}
+                <div className="page-action-bar">
+                    <input type="date" className="form-control filter-date-input" value={filterDate} onChange={(e) => setFilterDate(e.target.value)}
                         style={{ width: "160px" }} />
                     {filterDate && <button className="btn btn-sm btn-outline-secondary" onClick={() => setFilterDate("")}><X size={14}/></button>}
                     
